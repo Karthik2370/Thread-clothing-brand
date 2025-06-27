@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { X, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { gsap } from 'gsap';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const { 
@@ -16,6 +17,7 @@ const Cart = () => {
   
   const cartRef = useRef();
   const overlayRef = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const overlay = overlayRef.current;
@@ -145,7 +147,10 @@ const Cart = () => {
               <span>Total:</span>
               <span>₹{getTotalPrice().toFixed(2)}</span>
             </div>
-            <button className="w-full bg-black text-white py-4 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200">
+            <button 
+              className="w-full bg-black text-white py-4 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
+              onClick={() => { navigate('/checkout'); toggleCart(); }}
+            >
               Checkout
             </button>
             <button 

@@ -1,7 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { ShoppingBag, Menu, X } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { ShoppingBag, Menu, X, User, ChevronDown } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { gsap } from 'gsap';
+import { useNavigate, Link } from 'react-router-dom';
+
+const PROFILE_IMAGE = 'https://randomuser.me/api/portraits/men/32.jpg';
 
 const Header = () => {
   const { toggleCart, getTotalItems } = useCart();
@@ -9,6 +12,9 @@ const Header = () => {
   const logoRef = useRef();
   const navRef = useRef();
   const cartRef = useRef();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const tl = gsap.timeline();
@@ -29,6 +35,20 @@ const Header = () => {
     );
   }, []);
 
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [dropdownOpen]);
+
   return (
     <header 
       ref={headerRef}
@@ -45,25 +65,26 @@ const Header = () => {
 
           {/* Navigation */}
           <nav ref={navRef} className="hidden md:flex items-center space-x-8">
-            <a href="#home" className="text-sm font-medium text-gray-700 hover:text-black transition-colors duration-200">
+            <Link to="/" className="text-sm font-medium text-gray-700 hover:text-black transition-colors duration-200">
               Home
-            </a>
-            <a href="#products" className="text-sm font-medium text-gray-700 hover:text-black transition-colors duration-200">
+            </Link>
+            <Link to="/" onClick={() => { window.scrollTo({ top: document.getElementById('products')?.offsetTop || 0, behavior: 'smooth' }); }} className="text-sm font-medium text-gray-700 hover:text-black transition-colors duration-200">
               Products
-            </a>
-            <a href="#about" className="text-sm font-medium text-gray-700 hover:text-black transition-colors duration-200">
+            </Link>
+            <Link to="/" onClick={() => { window.scrollTo({ top: document.getElementById('about')?.offsetTop || 0, behavior: 'smooth' }); }} className="text-sm font-medium text-gray-700 hover:text-black transition-colors duration-200">
               About
-            </a>
-            <a href="#contact" className="text-sm font-medium text-gray-700 hover:text-black transition-colors duration-200">
+            </Link>
+            <Link to="/" onClick={() => { window.scrollTo({ top: document.getElementById('contact')?.offsetTop || 0, behavior: 'smooth' }); }} className="text-sm font-medium text-gray-700 hover:text-black transition-colors duration-200">
               Contact
-            </a>
+            </Link>
           </nav>
 
-          {/* Cart */}
+          {/* Cart & Profile */}
           <div ref={cartRef} className="flex items-center space-x-4">
             <button
               onClick={toggleCart}
               className="relative p-2 text-gray-700 hover:text-black transition-colors duration-200"
+              aria-label="Open cart"
             >
               <ShoppingBag size={24} />
               {getTotalItems() > 0 && (
@@ -72,6 +93,24 @@ const Header = () => {
                 </span>
               )}
             </button>
+            {/* Profile Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-black"
+                onClick={() => setDropdownOpen(v => !v)}
+                aria-label="User menu"
+              >
+                <img src={PROFILE_IMAGE} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+                <ChevronDown size={18} className="ml-1 text-gray-400" />
+              </button>
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-100 animate-fadeIn">
+                  <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => { setDropdownOpen(false); navigate('/profile'); }}>Profile</button>
+                  <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => { setDropdownOpen(false); navigate('/orders'); }}>Orders</button>
+                  <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setDropdownOpen(false)}>Settings</button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
