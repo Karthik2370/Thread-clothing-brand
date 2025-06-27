@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App.jsx';
-import Hero from './components/Hero';
+import HeroGallery from './components/HeroGallery';
 import ProductGrid from './components/ProductGrid';
 import About from './components/About';
 import ProductDetail from './components/ProductDetail';
@@ -22,7 +22,7 @@ createRoot(document.getElementById('root')).render(
         <Routes>
           <Route path="/" element={
             <>
-              <Hero />
+              <HeroGallery />
               <ProductGrid />
               <About />
             </>
