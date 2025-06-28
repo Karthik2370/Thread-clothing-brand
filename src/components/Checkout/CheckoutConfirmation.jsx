@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { CheckCircle, Package, Truck, CreditCard, Copy, Smartphone, Wallet } from 'lucide-react';
+import { CheckCircle, Package, Truck, CreditCard, Copy, Smartphone, Wallet, Lock } from 'lucide-react';
 
 const CheckoutConfirmation = () => {
   const navigate = useNavigate();
