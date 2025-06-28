@@ -7,6 +7,7 @@ const CheckoutConfirmation = () => {
   const navigate = useNavigate();
   const { items, getTotalPrice, clearCart } = useCart();
   const [paymentDetails, setPaymentDetails] = useState(null);
+  const [orderCleared, setOrderCleared] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -26,10 +27,19 @@ const CheckoutConfirmation = () => {
         timestamp: new Date().toISOString()
       });
       
-      // Clear cart after successful payment
-      if (clearCart) clearCart();
+      // Clear cart after successful payment only once
+      if (clearCart && !orderCleared) {
+        clearCart();
+        setOrderCleared(true);
+        
+        // Clean up localStorage
+        localStorage.removeItem('mock_payment_id');
+        localStorage.removeItem('mock_order_id');
+        localStorage.removeItem('mock_payment_method');
+        localStorage.removeItem('mock_amount');
+      }
     }
-  }, [clearCart]);
+  }, []); // Empty dependency array to run only once
 
   // Generate a random order number
   const orderNumber = `THR${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
@@ -57,6 +67,10 @@ const CheckoutConfirmation = () => {
       default: return 'Card Payment';
     }
   };
+
+  // Use stored items if cart was cleared
+  const displayItems = items.length > 0 ? items : [];
+  const displayTotal = paymentDetails ? parseFloat(paymentDetails.amount) : getTotalPrice();
 
   return (
     <div className="flex flex-col items-center justify-center py-8">
@@ -133,21 +147,27 @@ const CheckoutConfirmation = () => {
           <span className="font-mono text-sm font-medium">{orderNumber}</span>
         </div>
         
-        <div className="space-y-2 mb-4">
-          {items.map(item => (
-            <div key={`${item.product.id}-${item.selectedColor}-${item.selectedSize}`} 
-                 className="flex justify-between text-sm">
-              <span className="text-gray-700">
-                {item.product.name} ({item.selectedColor}, {item.selectedSize}) x{item.quantity}
-              </span>
-              <span className="font-medium">₹{item.product.price * item.quantity}</span>
-            </div>
-          ))}
-        </div>
+        {displayItems.length > 0 ? (
+          <div className="space-y-2 mb-4">
+            {displayItems.map(item => (
+              <div key={`${item.product.id}-${item.selectedColor}-${item.selectedSize}`} 
+                   className="flex justify-between text-sm">
+                <span className="text-gray-700">
+                  {item.product.name} ({item.selectedColor}, {item.selectedSize}) x{item.quantity}
+                </span>
+                <span className="font-medium">₹{item.product.price * item.quantity}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-sm text-gray-500 mb-4">
+            Order details processed successfully
+          </div>
+        )}
         
         <div className="border-t pt-2 flex justify-between font-bold">
           <span>Total Paid</span>
-          <span>₹{getTotalPrice().toFixed(2)}</span>
+          <span>₹{displayTotal.toFixed(2)}</span>
         </div>
       </div>
 
