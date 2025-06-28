@@ -1,6 +1,6 @@
 # THREAD – Minimal T-Shirt E-Commerce Store
 
-A modern, minimal, and fully responsive e-commerce website for selling premium t-shirts. Designed for a seamless shopping experience with smooth animations, clean UI, and integrated Stripe payments.
+A modern, minimal, and fully responsive e-commerce website for selling premium t-shirts. Designed for a seamless shopping experience with smooth animations, clean UI, and integrated Razorpay payments.
 
 ---
 
@@ -11,7 +11,7 @@ A modern, minimal, and fully responsive e-commerce website for selling premium t
 - **Tailwind CSS** (utility-first styling)
 - **GSAP** (GreenSock Animation Platform for smooth UI animations)
 - **Lucide React** (icon library)
-- **Stripe Payment Links** (secure payment processing)
+- **Razorpay** (secure payment processing for India)
 - **Unsplash** (for high-quality t-shirt images)
 - **Vite** (for fast development and build)
 
@@ -23,7 +23,7 @@ A modern, minimal, and fully responsive e-commerce website for selling premium t
 - **Responsive Design:** Looks great on all devices, from mobile to desktop.
 - **Animated Hero & About Sections:** Smooth entrance and scroll-triggered animations using GSAP.
 - **Lazy Loading Images:** Fast initial load and smooth image transitions.
-- **Stripe Payment Integration:** Secure payment processing with Stripe Payment Links.
+- **Razorpay Payment Integration:** Secure payment processing with support for UPI, Cards, Wallets & more.
 - **Multi-step Checkout:** Streamlined checkout process with address, delivery, and payment steps.
 - **Shopping Cart:** Full-featured cart with quantity management and real-time totals.
 - **Product Details:** Detailed product pages with color and size selection.
@@ -33,23 +33,57 @@ A modern, minimal, and fully responsive e-commerce website for selling premium t
 
 ## 💳 Payment Integration
 
-This project uses **Stripe Payment Links** for secure payment processing:
+This project uses **Razorpay** for secure payment processing - perfect for Indian businesses and personal projects:
 
-- **No Backend Required:** Payment Links work without server-side code
-- **Secure Processing:** All payment data is handled by Stripe's secure infrastructure
-- **Multiple Payment Methods:** Supports credit cards, debit cards, and digital wallets
-- **Real-time Processing:** Instant payment confirmation and order processing
+### Why Razorpay?
+- **Easy Setup:** Simple onboarding process for Indian developers
+- **No Complex KYC:** Minimal documentation required for test accounts
+- **Multiple Payment Methods:** UPI, Cards, Net Banking, Wallets
+- **Free Test Environment:** Unlimited testing with test keys
+- **Indian-focused:** Built specifically for the Indian market
 
-### Setting Up Stripe Payments
+### Supported Payment Methods
+- **Credit/Debit Cards:** Visa, Mastercard, Rupay, American Express
+- **UPI:** Google Pay, PhonePe, Paytm, BHIM, and all UPI apps
+- **Digital Wallets:** Paytm, Mobikwik, Freecharge, Amazon Pay
+- **Net Banking:** All major Indian banks
+- **EMI:** Easy installment options
 
-To use real Stripe payments in production:
+### Setting Up Razorpay Payments
 
-1. Create a [Stripe account](https://dashboard.stripe.com/register)
-2. In your Stripe Dashboard, go to **Products** → **Payment Links**
-3. Create Payment Links for your products
-4. Update the `createStripePaymentLink()` function in `CheckoutPayment.jsx` with your actual Payment Link IDs
+1. **Create a Razorpay Account**
+   - Visit [Razorpay Dashboard](https://dashboard.razorpay.com/signup)
+   - Sign up with your email and phone number
+   - Complete basic verification (much simpler than other providers)
 
-For testing, the current implementation uses demo Payment Links that simulate the payment flow.
+2. **Get Your API Keys**
+   - Go to Settings → API Keys in your Razorpay Dashboard
+   - Generate Test API Keys (no documentation required)
+   - Copy your Test Key ID (starts with `rzp_test_`)
+
+3. **Update the Integration**
+   - Replace the test key in `CheckoutPayment.jsx`:
+   ```javascript
+   key: 'rzp_test_YOUR_KEY_HERE', // Replace with your test key
+   ```
+
+4. **Test Payments**
+   - Use test card numbers provided by Razorpay
+   - Test UPI with VPA: `success@razorpay`
+   - All test payments are free and unlimited
+
+5. **Go Live** (when ready)
+   - Complete KYC verification in Razorpay Dashboard
+   - Get Live API Keys
+   - Replace test keys with live keys
+
+### Test Payment Details
+For testing, you can use these credentials:
+- **Test Cards:** 4111 1111 1111 1111 (Visa), 5555 5555 5555 4444 (Mastercard)
+- **CVV:** Any 3 digits
+- **Expiry:** Any future date
+- **UPI:** success@razorpay (for successful payments)
+- **UPI:** failure@razorpay (for failed payments)
 
 ---
 
@@ -74,6 +108,11 @@ For testing, the current implementation uses demo Payment Links that simulate th
 4. **Open your browser**
    Navigate to `http://localhost:5173` to view the application.
 
+5. **Test Payments**
+   - Add items to cart and proceed to checkout
+   - Use the test payment credentials mentioned above
+   - Experience the complete payment flow
+
 ---
 
 ## 📱 Features Overview
@@ -88,8 +127,8 @@ For testing, the current implementation uses demo Payment Links that simulate th
 ### Checkout Process
 - **Multi-step Checkout:** Address → Delivery → Payment → Confirmation
 - **Form Validation:** Client-side validation for all checkout forms
-- **Payment Options:** Stripe Payment Links and demo payment for testing
-- **Order Confirmation:** Detailed confirmation with order tracking information
+- **Payment Options:** Razorpay (UPI, Cards, Wallets) and demo payment for testing
+- **Order Confirmation:** Detailed confirmation with payment tracking information
 
 ### User Features
 - **User Profile:** Manage personal information and preferences
@@ -105,6 +144,36 @@ For testing, the current implementation uses demo Payment Links that simulate th
 
 ---
 
+## 🔧 Configuration
+
+### Razorpay Configuration
+Update the Razorpay configuration in `src/components/Checkout/CheckoutPayment.jsx`:
+
+```javascript
+const options = {
+  key: 'rzp_test_YOUR_KEY_HERE', // Your Razorpay Test Key
+  amount: getTotalPrice() * 100, // Amount in paise
+  currency: 'INR',
+  name: 'THREAD',
+  description: 'Premium T-shirt Purchase',
+  // ... other options
+};
+```
+
+### Environment Variables (Optional)
+For production, you can use environment variables:
+
+```env
+VITE_RAZORPAY_KEY_ID=rzp_test_YOUR_KEY_HERE
+```
+
+Then update the code:
+```javascript
+key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_1DP5mmOlF5G5ag',
+```
+
+---
+
 ## 📄 License
 
 This project is for educational and demonstration purposes.  
@@ -116,4 +185,14 @@ Product images are used under Unsplash's free-to-use license.
 
 Experience the live demo at: [Your deployment URL]
 
-For the best experience, try the complete checkout flow including the Stripe payment integration!
+For the best experience, try the complete checkout flow including the Razorpay payment integration with test credentials!
+
+---
+
+## 🤝 Contributing
+
+Feel free to fork this project and submit pull requests for any improvements!
+
+## 📞 Support
+
+For any questions or issues, please open an issue in the repository or contact the maintainer.

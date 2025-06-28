@@ -1,63 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { CreditCard, ExternalLink } from 'lucide-react';
+import { CreditCard, Smartphone, Wallet, Shield } from 'lucide-react';
 
 const CheckoutPayment = () => {
   const navigate = useNavigate();
   const { items, getTotalPrice } = useCart();
-  const [paymentMethod, setPaymentMethod] = useState('stripe');
+  const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // Create Stripe Payment Link URL with line items
-  const createStripePaymentLink = () => {
-    // For demo purposes, we'll use a pre-created Stripe Payment Link
-    // In a real implementation, you would create these Payment Links in your Stripe Dashboard
-    // and map them to your products
-    
-    const baseUrl = 'https://buy.stripe.com/test_';
-    
-    // Example Payment Links (you would create these in your Stripe Dashboard)
-    const paymentLinks = {
-      'single-item': 'eVa7sQ0OQ4Og6pq000', // Example link for single items
-      'multiple-items': 'bIY5kI8gofYM6pq001' // Example link for multiple items
-    };
-    
-    // For demo, we'll use a generic payment link
-    // In production, you'd dynamically select based on cart contents
-    const linkId = items.length === 1 ? paymentLinks['single-item'] : paymentLinks['multiple-items'];
-    
-    return `${baseUrl}${linkId}`;
-  };
-
-  const handleStripePayment = () => {
+  const handleRazorpayPayment = () => {
     setIsProcessing(true);
-    
-    // Simulate processing delay
-    setTimeout(() => {
-      const paymentUrl = createStripePaymentLink();
-      
-      // Open Stripe Payment Link in new tab
-      window.open(paymentUrl, '_blank');
-      
-      // For demo purposes, we'll automatically redirect to confirmation after a delay
-      // In production, you'd handle this via Stripe webhooks or redirect URLs
-      setTimeout(() => {
+
+    // Razorpay configuration
+    const options = {
+      key: 'rzp_test_1DP5mmOlF5G5ag', // Test key - replace with your actual test key
+      amount: getTotalPrice() * 100, // Amount in paise (multiply by 100)
+      currency: 'INR',
+      name: 'THREAD',
+      description: 'Premium T-shirt Purchase',
+      image: '/favicon-96.png', // Your logo
+      order_id: '', // Optional - for server-side order creation
+      handler: function (response) {
+        // Payment successful
+        console.log('Payment successful:', response);
         setIsProcessing(false);
+        
+        // Store payment details for confirmation page
+        localStorage.setItem('razorpay_payment_id', response.razorpay_payment_id);
+        localStorage.setItem('razorpay_order_id', response.razorpay_order_id || '');
+        localStorage.setItem('razorpay_signature', response.razorpay_signature || '');
+        
         navigate('/checkout/confirmation');
-      }, 3000);
-    }, 1000);
+      },
+      prefill: {
+        name: 'John Doe',
+        email: 'john@example.com',
+        contact: '9999999999'
+      },
+      notes: {
+        address: 'THREAD Store'
+      },
+      theme: {
+        color: '#000000'
+      },
+      modal: {
+        ondismiss: function() {
+          setIsProcessing(false);
+          console.log('Payment modal closed');
+        }
+      }
+    };
+
+    const rzp = new window.Razorpay(options);
+    
+    rzp.on('payment.failed', function (response) {
+      setIsProcessing(false);
+      alert('Payment failed: ' + response.error.description);
+      console.log('Payment failed:', response.error);
+    });
+
+    rzp.open();
   };
 
   const handleDemoPayment = () => {
-    // Simulate demo payment processing
     setIsProcessing(true);
     setTimeout(() => {
       setIsProcessing(false);
+      // Store demo payment details
+      localStorage.setItem('demo_payment_id', 'demo_' + Date.now());
       navigate('/checkout/confirmation');
     }, 2000);
   };
@@ -88,29 +103,31 @@ const CheckoutPayment = () => {
         <div className="space-y-3">
           <div 
             className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 ${
-              paymentMethod === 'stripe' ? 'border-black bg-gray-50' : 'border-gray-200 hover:border-gray-300'
+              paymentMethod === 'razorpay' ? 'border-black bg-gray-50' : 'border-gray-200 hover:border-gray-300'
             }`}
-            onClick={() => setPaymentMethod('stripe')}
+            onClick={() => setPaymentMethod('razorpay')}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className={`w-4 h-4 rounded-full border-2 ${
-                  paymentMethod === 'stripe' ? 'border-black bg-black' : 'border-gray-300'
+                  paymentMethod === 'razorpay' ? 'border-black bg-black' : 'border-gray-300'
                 }`}>
-                  {paymentMethod === 'stripe' && (
+                  {paymentMethod === 'razorpay' && (
                     <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
                   )}
                 </div>
-                <CreditCard size={20} className="text-gray-600" />
+                <div className="flex items-center space-x-2">
+                  <img src="https://razorpay.com/assets/razorpay-logo.svg" alt="Razorpay" className="h-6" />
+                </div>
                 <div>
-                  <div className="font-medium">Stripe Payment</div>
-                  <div className="text-sm text-gray-500">Secure payment with credit/debit card</div>
+                  <div className="font-medium">Razorpay Payment</div>
+                  <div className="text-sm text-gray-500">Cards, UPI, Wallets & More</div>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <img src="https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" alt="Visa" className="h-6" />
-                <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg" alt="Mastercard" className="h-6" />
-                <img src="https://js.stripe.com/v3/fingerprinted/img/amex-a49b82f46c5cd6a96a6e418a6ca1717c.svg" alt="Amex" className="h-6" />
+                <CreditCard size={20} className="text-gray-400" />
+                <Smartphone size={20} className="text-gray-400" />
+                <Wallet size={20} className="text-gray-400" />
               </div>
             </div>
           </div>
@@ -137,20 +154,47 @@ const CheckoutPayment = () => {
           </div>
         </div>
 
-        {/* Stripe Payment Info */}
-        {paymentMethod === 'stripe' && (
+        {/* Razorpay Payment Info */}
+        {paymentMethod === 'razorpay' && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-start space-x-3">
-              <ExternalLink size={20} className="text-blue-600 mt-0.5" />
+              <Shield size={20} className="text-blue-600 mt-0.5" />
               <div>
-                <h4 className="font-medium text-blue-900 mb-1">Secure Stripe Payment</h4>
+                <h4 className="font-medium text-blue-900 mb-1">Secure Razorpay Payment</h4>
                 <p className="text-sm text-blue-700 mb-2">
-                  You'll be redirected to Stripe's secure payment page to complete your purchase. 
+                  Pay securely using Credit/Debit Cards, UPI, Net Banking, or Digital Wallets. 
                   Your payment information is encrypted and secure.
                 </p>
-                <p className="text-xs text-blue-600">
-                  After payment, you'll be automatically redirected back to our confirmation page.
-                </p>
+                <div className="flex items-center space-x-4 text-xs text-blue-600">
+                  <span>✓ 256-bit SSL Encryption</span>
+                  <span>✓ PCI DSS Compliant</span>
+                  <span>✓ Instant Confirmation</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Supported Payment Methods for Razorpay */}
+        {paymentMethod === 'razorpay' && (
+          <div className="bg-gray-50 rounded-lg p-4">
+            <h4 className="font-medium mb-3">Supported Payment Methods</h4>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <div className="font-medium text-gray-700 mb-1">Cards</div>
+                <div className="text-gray-600">Visa, Mastercard, Rupay, Amex</div>
+              </div>
+              <div>
+                <div className="font-medium text-gray-700 mb-1">UPI</div>
+                <div className="text-gray-600">GPay, PhonePe, Paytm, BHIM</div>
+              </div>
+              <div>
+                <div className="font-medium text-gray-700 mb-1">Wallets</div>
+                <div className="text-gray-600">Paytm, Mobikwik, Freecharge</div>
+              </div>
+              <div>
+                <div className="font-medium text-gray-700 mb-1">Banking</div>
+                <div className="text-gray-600">Net Banking, EMI</div>
               </div>
             </div>
           </div>
@@ -158,7 +202,7 @@ const CheckoutPayment = () => {
 
         {/* Payment Button */}
         <button
-          onClick={paymentMethod === 'stripe' ? handleStripePayment : handleDemoPayment}
+          onClick={paymentMethod === 'razorpay' ? handleRazorpayPayment : handleDemoPayment}
           disabled={isProcessing}
           className={`w-full py-4 rounded-lg font-medium text-lg transition-all duration-200 flex items-center justify-center space-x-2 ${
             isProcessing 
@@ -172,21 +216,21 @@ const CheckoutPayment = () => {
               <span>Processing...</span>
             </>
           ) : (
-            <>
-              {paymentMethod === 'stripe' && <ExternalLink size={20} />}
-              <span>
-                {paymentMethod === 'stripe' 
-                  ? `Pay ₹${getTotalPrice().toFixed(2)} with Stripe` 
-                  : `Complete Demo Payment ₹${getTotalPrice().toFixed(2)}`
-                }
-              </span>
-            </>
+            <span>
+              {paymentMethod === 'razorpay' 
+                ? `Pay ₹${getTotalPrice().toFixed(2)} with Razorpay` 
+                : `Complete Demo Payment ₹${getTotalPrice().toFixed(2)}`
+              }
+            </span>
           )}
         </button>
 
         {/* Security Notice */}
         <div className="text-center text-sm text-gray-500">
           <p>🔒 Your payment information is secure and encrypted</p>
+          {paymentMethod === 'razorpay' && (
+            <p className="mt-1">Powered by Razorpay - India's most trusted payment gateway</p>
+          )}
         </div>
       </div>
     </>

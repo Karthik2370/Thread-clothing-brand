@@ -1,18 +1,42 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { CheckCircle, Package, Truck, CreditCard } from 'lucide-react';
+import { CheckCircle, Package, Truck, CreditCard, Copy } from 'lucide-react';
 
 const CheckoutConfirmation = () => {
   const navigate = useNavigate();
   const { items, getTotalPrice } = useCart();
+  const [paymentDetails, setPaymentDetails] = useState(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Get payment details from localStorage
+    const razorpayPaymentId = localStorage.getItem('razorpay_payment_id');
+    const demoPaymentId = localStorage.getItem('demo_payment_id');
+    
+    if (razorpayPaymentId) {
+      setPaymentDetails({
+        type: 'razorpay',
+        paymentId: razorpayPaymentId,
+        orderId: localStorage.getItem('razorpay_order_id'),
+        signature: localStorage.getItem('razorpay_signature')
+      });
+    } else if (demoPaymentId) {
+      setPaymentDetails({
+        type: 'demo',
+        paymentId: demoPaymentId
+      });
+    }
   }, []);
 
   // Generate a random order number for demo
   const orderNumber = `ORD${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    // You could add a toast notification here
+  };
 
   return (
     <div className="flex flex-col items-center justify-center py-8">
@@ -26,6 +50,43 @@ const CheckoutConfirmation = () => {
       <p className="text-gray-600 mb-6 text-center max-w-md">
         Thank you for your purchase. Your order has been confirmed and will be processed shortly.
       </p>
+
+      {/* Payment Details */}
+      {paymentDetails && (
+        <div className="w-full max-w-md bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <h3 className="font-semibold text-blue-900 mb-3">Payment Details</h3>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-blue-700">Payment Method:</span>
+              <span className="font-medium text-blue-900">
+                {paymentDetails.type === 'razorpay' ? 'Razorpay' : 'Demo Payment'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-blue-700">Payment ID:</span>
+              <div className="flex items-center space-x-2">
+                <span className="font-mono text-xs text-blue-900">
+                  {paymentDetails.paymentId.substring(0, 20)}...
+                </span>
+                <button 
+                  onClick={() => copyToClipboard(paymentDetails.paymentId)}
+                  className="text-blue-600 hover:text-blue-800"
+                >
+                  <Copy size={14} />
+                </button>
+              </div>
+            </div>
+            {paymentDetails.orderId && (
+              <div className="flex items-center justify-between">
+                <span className="text-blue-700">Order ID:</span>
+                <span className="font-mono text-xs text-blue-900">
+                  {paymentDetails.orderId.substring(0, 20)}...
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Order Details */}
       <div className="w-full max-w-md bg-gray-50 rounded-lg p-6 mb-6">
@@ -55,12 +116,17 @@ const CheckoutConfirmation = () => {
         <h3 className="font-semibold text-center mb-4">What happens next?</h3>
         
         <div className="flex items-start space-x-3">
-          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-            <CreditCard size={16} className="text-blue-600" />
+          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <CreditCard size={16} className="text-green-600" />
           </div>
           <div>
             <div className="font-medium text-sm">Payment Confirmed</div>
-            <div className="text-xs text-gray-500">Your payment has been processed successfully</div>
+            <div className="text-xs text-gray-500">
+              {paymentDetails?.type === 'razorpay' 
+                ? 'Your payment has been processed by Razorpay' 
+                : 'Demo payment completed successfully'
+              }
+            </div>
           </div>
         </div>
 
@@ -75,8 +141,8 @@ const CheckoutConfirmation = () => {
         </div>
 
         <div className="flex items-start space-x-3">
-          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-            <Truck size={16} className="text-green-600" />
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+            <Truck size={16} className="text-blue-600" />
           </div>
           <div>
             <div className="font-medium text-sm">Shipping</div>
