@@ -12,6 +12,7 @@ import CheckoutDelivery from './components/Checkout/CheckoutDelivery';
 import CheckoutPayment from './components/Checkout/CheckoutPayment';
 import CheckoutConfirmation from './components/Checkout/CheckoutConfirmation';
 import Orders from './components/Orders';
+import OrderDetail from './components/OrderDetail';
 import Profile from './components/Profile';
 import './index.css';
 
@@ -36,6 +37,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="confirmation" element={<CheckoutConfirmation />} />
           </Route>
           <Route path="/orders" element={<Orders />} />
+          <Route path="/order/:orderId" element={<OrderDetail />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </App>
