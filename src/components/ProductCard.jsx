@@ -73,13 +73,13 @@ const ProductCard = ({ product, index }) => {
   return (
     <div
       ref={cardRef}
-      className="group cursor-pointer bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300"
+      className="group cursor-pointer bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => navigate(`/product/${product.id}`)}
     >
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-gray-100">
+      <div className="relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
         <div ref={imageRef} className="w-full h-full">
           <LazyImage
             src={product.image}
@@ -93,22 +93,22 @@ const ProductCard = ({ product, index }) => {
           isHovered ? 'opacity-100' : 'opacity-0'
         }`}>
           <div className="flex space-x-3">
-            <button className="p-3 bg-white rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200">
-              <Heart size={20} className="text-gray-700" />
+            <button className="p-3 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+              <Heart size={20} className="text-gray-700 dark:text-gray-300" />
             </button>
             <button 
               onClick={e => { e.stopPropagation(); handleAddToCart(e); }}
-              className="p-3 bg-black rounded-full shadow-lg hover:bg-gray-800 transition-colors duration-200"
+              className="p-3 bg-black dark:bg-white rounded-full shadow-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200"
               aria-label="Add to Cart"
             >
-              <ShoppingBag size={20} className="text-white" />
+              <ShoppingBag size={20} className="text-white dark:text-black" />
             </button>
           </div>
         </div>
 
         {/* Featured Badge */}
         {product.featured && (
-          <div className="absolute top-4 left-4 bg-black text-white px-3 py-1 text-xs font-medium rounded-full">
+          <div className="absolute top-4 left-4 bg-black dark:bg-white text-white dark:text-black px-3 py-1 text-xs font-medium rounded-full">
             Featured
           </div>
         )}
@@ -116,19 +116,19 @@ const ProductCard = ({ product, index }) => {
 
       {/* Content */}
       <div ref={contentRef} className="p-6">
-        <h3 className="font-semibold text-lg text-gray-900 mb-2">{product.name}</h3>
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
+        <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2 transition-colors duration-300">{product.name}</h3>
+        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2 transition-colors duration-300">{product.description}</p>
         
         {/* Colors */}
         <div className="flex items-center space-x-2 mb-4">
-          <span className="text-sm text-gray-500">Colors:</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">Colors:</span>
           <div className="flex space-x-1">
             {product.colors.slice(0, 3).map((color, idx) => (
               <button
                 key={idx}
                 onClick={e => { e.stopPropagation(); setSelectedColor(color); }}
-                className={`w-6 h-6 rounded-full border-2 ${
-                  color === selectedColor ? 'border-black' : 'border-gray-300'
+                className={`w-6 h-6 rounded-full border-2 transition-colors duration-200 ${
+                  color === selectedColor ? 'border-black dark:border-white' : 'border-gray-300 dark:border-gray-600'
                 }`}
                 style={{ 
                   backgroundColor: color === 'white' ? '#fff' : 
@@ -142,16 +142,16 @@ const ProductCard = ({ product, index }) => {
 
         {/* Sizes */}
         <div className="flex items-center space-x-2 mb-4">
-          <span className="text-sm text-gray-500">Sizes:</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">Sizes:</span>
           <div className="flex space-x-1">
             {product.sizes.slice(0, 4).map((size) => (
               <button
                 key={size}
                 onClick={e => { e.stopPropagation(); setSelectedSize(size); }}
-                className={`px-2 py-1 text-xs border rounded ${
+                className={`px-2 py-1 text-xs border rounded transition-colors duration-200 ${
                   size === selectedSize 
-                    ? 'border-black bg-black text-white' 
-                    : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                    ? 'border-black dark:border-white bg-black dark:bg-white text-white dark:text-black' 
+                    : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500'
                 }`}
               >
                 {size}
@@ -162,13 +162,13 @@ const ProductCard = ({ product, index }) => {
 
         {/* Price */}
         <div className="flex items-center justify-between">
-          <span className="text-xl font-bold text-gray-900">₹{product.price}</span>
+          <span className="text-xl font-bold text-gray-900 dark:text-white transition-colors duration-300">₹{product.price}</span>
           <button 
             onClick={e => { e.stopPropagation(); handleAddToCart(e); }}
-            className="p-3 bg-black rounded-full shadow-lg hover:bg-gray-800 transition-colors duration-200"
+            className="p-3 bg-black dark:bg-white rounded-full shadow-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200"
             aria-label="Add to Cart"
           >
-            <ShoppingBag size={20} className="text-white" />
+            <ShoppingBag size={20} className="text-white dark:text-black" />
           </button>
         </div>
       </div>

@@ -15,7 +15,7 @@ const CheckoutLayout = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center py-8 px-2 sm:px-0 transition-colors duration-300">
-      <div className="w-full max-w-xl bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-8 mb-8 mt-16 transition-colors duration-300">
+      <div className="w-full max-w-xl bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-8 mb-8 mt-20 transition-colors duration-300">
         <div className="flex justify-between items-center mb-6">
           {steps.map((step, idx) => (
             <div key={step.path} className="flex-1 flex flex-col items-center">
