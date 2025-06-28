@@ -68,14 +68,14 @@ const About = () => {
   ];
 
   return (
-    <section id="about" ref={sectionRef} className="py-20 bg-gray-50">
+    <section id="about" ref={sectionRef} className="py-20 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="about-header text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black dark:text-white mb-6 transition-colors duration-300">
             Why Choose Thread?
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed transition-colors duration-300">
             We believe in the power of simplicity. Every piece in our collection 
             is thoughtfully designed to elevate your wardrobe with timeless style 
             and uncompromising quality.
@@ -83,26 +83,26 @@ const About = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="features-grid grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div className="features-grid grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="feature-item text-center p-8 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
+              className="feature-item text-center p-6 sm:p-8 bg-white dark:bg-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-black text-white rounded-full mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-black dark:bg-white text-white dark:text-black rounded-full mb-6 transition-colors duration-300">
                 <feature.icon size={24} />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">{feature.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-300">{feature.title}</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed transition-colors duration-300">{feature.description}</p>
             </div>
           ))}
         </div>
 
         {/* Story Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           <div ref={storyTextRef}>
-            <h3 className="text-3xl font-bold text-black mb-6">Our Story</h3>
-            <div className="space-y-4 text-gray-600 leading-relaxed">
+            <h3 className="text-2xl sm:text-3xl font-bold text-black dark:text-white mb-6 transition-colors duration-300">Our Story</h3>
+            <div className="space-y-4 text-gray-600 dark:text-gray-400 leading-relaxed transition-colors duration-300">
               <p>
                 Founded in 2020, Thread emerged from a simple idea: clothing should be 
                 beautiful, comfortable, and sustainable. We set out to create the perfect 
@@ -123,7 +123,7 @@ const About = () => {
             <img 
               src="https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=800"
               alt="About us"
-              className="rounded-lg shadow-lg w-full h-96 object-cover"
+              className="rounded-lg shadow-lg w-full h-64 sm:h-96 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg"></div>
           </div>

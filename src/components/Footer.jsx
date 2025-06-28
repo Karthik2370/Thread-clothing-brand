@@ -3,11 +3,11 @@ import { Instagram, Twitter, Facebook, Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white py-16">
+    <footer className="bg-black dark:bg-gray-900 text-white py-16 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 md:col-span-2 lg:col-span-2">
             <h3 className="text-2xl font-bold mb-4">THREAD</h3>
             <p className="text-gray-400 mb-6 max-w-md">
               Minimal. Modern. Timeless. Creating the perfect t-shirt collection 
@@ -56,18 +56,18 @@ const Footer = () => {
 
         {/* Newsletter */}
         <div className="border-t border-gray-800 pt-8 mb-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="mb-4 md:mb-0">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-4 lg:space-y-0">
+            <div className="mb-4 lg:mb-0">
               <h4 className="font-semibold mb-2">Stay Updated</h4>
               <p className="text-gray-400">Get the latest updates on new products and exclusive offers.</p>
             </div>
-            <div className="flex w-full md:w-auto">
+            <div className="flex flex-col sm:flex-row w-full lg:w-auto space-y-2 sm:space-y-0">
               <input 
                 type="email" 
                 placeholder="Enter your email"
-                className="flex-1 md:w-64 px-4 py-3 bg-gray-900 text-white border border-gray-700 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-white"
+                className="flex-1 sm:w-64 px-4 py-3 bg-gray-900 text-white border border-gray-700 rounded-l-lg sm:rounded-r-none focus:outline-none focus:ring-2 focus:ring-white"
               />
-              <button className="px-6 py-3 bg-white text-black font-medium rounded-r-lg hover:bg-gray-200 transition-colors duration-200">
+              <button className="px-6 py-3 bg-white text-black font-medium rounded-r-lg sm:rounded-l-none hover:bg-gray-200 transition-colors duration-200">
                 Subscribe
               </button>
             </div>
@@ -75,9 +75,9 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between text-sm text-gray-400">
+        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between text-sm text-gray-400 space-y-4 md:space-y-0">
           <p>&copy; 2025 Karthik Nambiar. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
+          <div className="flex flex-wrap justify-center space-x-6">
             <a href="#" className="hover:text-white transition-colors duration-200">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors duration-200">Terms of Service</a>
             <a href="#" className="hover:text-white transition-colors duration-200">Cookies</a>
