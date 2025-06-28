@@ -14,6 +14,7 @@ import CheckoutConfirmation from './components/Checkout/CheckoutConfirmation';
 import Orders from './components/Orders';
 import OrderDetail from './components/OrderDetail';
 import Profile from './components/Profile';
+import Settings from './components/Settings';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
@@ -39,6 +40,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/orders" element={<Orders />} />
           <Route path="/order/:orderId" element={<OrderDetail />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </App>
     </BrowserRouter>
