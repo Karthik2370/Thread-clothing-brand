@@ -1,54 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { products } from '../data/products';
+import { MOCK_REVIEWS, SIZE_GUIDE } from '../data/mockData';
 import { useCart } from '../context/CartContext';
 import { gsap } from 'gsap';
 import LazyImage from './LazyImage';
-import { ShoppingBag, ArrowLeft, Star, Heart, Share2, Truck, Shield, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
-
-// Mock reviews data
-const MOCK_REVIEWS = {
-  '1': [
-    {
-      id: 1,
-      user: 'Rahul S.',
-      rating: 5,
-      date: '2024-05-15',
-      review: 'Excellent quality! The fabric is soft and the fit is perfect. Highly recommended.',
-      verified: true,
-      helpful: 12
-    },
-    {
-      id: 2,
-      user: 'Priya M.',
-      rating: 4,
-      date: '2024-05-10',
-      review: 'Good quality t-shirt. The black color is rich and doesn\'t fade after washing.',
-      verified: true,
-      helpful: 8
-    },
-    {
-      id: 3,
-      user: 'Amit K.',
-      rating: 5,
-      date: '2024-05-05',
-      review: 'Perfect for daily wear. Comfortable and stylish. Will definitely buy more.',
-      verified: false,
-      helpful: 15
-    }
-  ],
-  '2': [
-    {
-      id: 4,
-      user: 'Sneha R.',
-      rating: 5,
-      date: '2024-05-12',
-      review: 'Love the minimalist design! Fits true to size and the quality is outstanding.',
-      verified: true,
-      helpful: 10
-    }
-  ]
-};
+import { ShoppingBag, ArrowLeft, Star, Heart, Share2, Truck, Shield, RotateCcw, ChevronDown, ChevronUp, X, Ruler } from 'lucide-react';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -60,6 +17,9 @@ const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
   const product = products.find(p => p.id === id);
   const mainRef = useRef();
   const imageRef = useRef();
@@ -79,7 +39,6 @@ const ProductDetail = () => {
       );
     }
 
-    // Animate image and details separately
     if (imageRef.current && detailsRef.current) {
       gsap.fromTo(
         imageRef.current,
@@ -100,6 +59,7 @@ const ProductDetail = () => {
     if (product) {
       setSelectedColor(product.colors[0]);
       setSelectedSize(product.sizes[0]);
+      setSelectedImageIndex(0);
     }
   }, [product]);
 
@@ -118,7 +78,6 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     addToCart(product, selectedColor, selectedSize, quantity);
-    // Add success animation
     gsap.to(detailsRef.current?.querySelector('.add-to-cart-btn'), {
       scale: 0.95,
       duration: 0.1,
@@ -144,10 +103,15 @@ const ProductDetail = () => {
     ));
   };
 
+  const handleReviewSubmit = (rating, review) => {
+    console.log('Review submitted:', { productId: id, rating, review });
+    setShowReviewModal(false);
+    alert('Review submitted successfully!');
+  };
+
   return (
     <section className="py-20 bg-white min-h-screen">
       <div ref={mainRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb */}
         <button 
           onClick={() => navigate(-1)} 
           className="mb-6 flex items-center text-gray-500 hover:text-black transition-colors duration-200"
@@ -156,11 +120,11 @@ const ProductDetail = () => {
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          {/* Product Image */}
+          {/* Product Images */}
           <div ref={imageRef} className="space-y-4">
             <div className="relative group">
               <LazyImage 
-                src={product.image} 
+                src={product.images[selectedImageIndex]} 
                 alt={product.name} 
                 className="rounded-lg shadow-lg w-full h-96 lg:h-[500px] object-cover" 
               />
@@ -178,12 +142,18 @@ const ProductDetail = () => {
               </button>
             </div>
             
-            {/* Additional product images would go here */}
+            {/* Image Thumbnails */}
             <div className="grid grid-cols-4 gap-2">
-              {[1, 2, 3, 4].map((_, idx) => (
-                <div key={idx} className="aspect-square bg-gray-100 rounded-lg border-2 border-transparent hover:border-black transition-colors duration-200 cursor-pointer">
+              {product.images.map((image, idx) => (
+                <div 
+                  key={idx} 
+                  className={`aspect-square rounded-lg border-2 transition-colors duration-200 cursor-pointer ${
+                    selectedImageIndex === idx ? 'border-black' : 'border-transparent hover:border-gray-300'
+                  }`}
+                  onClick={() => setSelectedImageIndex(idx)}
+                >
                   <LazyImage 
-                    src={product.image} 
+                    src={image} 
                     alt={`${product.name} view ${idx + 1}`} 
                     className="w-full h-full object-cover rounded-lg" 
                   />
@@ -249,7 +219,11 @@ const ProductDetail = () => {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700">Size: {selectedSize}</span>
-                <button className="text-xs text-blue-600 hover:text-blue-800 underline">
+                <button 
+                  onClick={() => setShowSizeGuide(true)}
+                  className="text-xs text-blue-600 hover:text-blue-800 underline flex items-center gap-1"
+                >
+                  <Ruler size={12} />
                   Size Guide
                 </button>
               </div>
@@ -398,7 +372,10 @@ const ProductDetail = () => {
                         </div>
                         <p className="text-gray-600">Based on {reviews.length} review{reviews.length !== 1 ? 's' : ''}</p>
                       </div>
-                      <button className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200">
+                      <button 
+                        onClick={() => setShowReviewModal(true)}
+                        className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
+                      >
                         Write a Review
                       </button>
                     </div>
@@ -473,7 +450,10 @@ const ProductDetail = () => {
                   <Star size={48} className="mx-auto text-gray-300 mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No reviews yet</h3>
                   <p className="text-gray-500 mb-6">Be the first to review this product</p>
-                  <button className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200">
+                  <button 
+                    onClick={() => setShowReviewModal(true)}
+                    className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
+                  >
                     Write a Review
                   </button>
                 </div>
@@ -567,7 +547,190 @@ const ProductDetail = () => {
           </div>
         )}
       </div>
+
+      {/* Size Guide Modal */}
+      {showSizeGuide && (
+        <SizeGuideModal onClose={() => setShowSizeGuide(false)} />
+      )}
+
+      {/* Review Modal */}
+      {showReviewModal && (
+        <ReviewModal 
+          product={product}
+          onClose={() => setShowReviewModal(false)}
+          onSubmit={handleReviewSubmit}
+        />
+      )}
     </section>
+  );
+};
+
+// Size Guide Modal Component
+const SizeGuideModal = ({ onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold flex items-center gap-2">
+            <Ruler size={20} />
+            Size Guide
+          </h3>
+          <button 
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+          >
+            <X size={20} />
+          </button>
+        </div>
+        
+        {/* Size Chart */}
+        <div className="mb-6">
+          <h4 className="font-medium mb-4">Size Chart (in inches)</h4>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="border border-gray-300 px-4 py-2 text-left">Size</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">Chest</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">Length</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">Shoulder</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(SIZE_GUIDE.measurements).map(([size, measurements]) => (
+                  <tr key={size}>
+                    <td className="border border-gray-300 px-4 py-2 font-medium">{size}</td>
+                    <td className="border border-gray-300 px-4 py-2">{measurements.chest}</td>
+                    <td className="border border-gray-300 px-4 py-2">{measurements.length}</td>
+                    <td className="border border-gray-300 px-4 py-2">{measurements.shoulder}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Fitting Tips */}
+        <div>
+          <h4 className="font-medium mb-3">Fitting Tips</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            {SIZE_GUIDE.tips.map((tip, index) => (
+              <li key={index} className="flex items-start">
+                <span className="text-blue-600 mr-2">•</span>
+                {tip}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-6 pt-4 border-t border-gray-200">
+          <button
+            onClick={onClose}
+            className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
+          >
+            Got it!
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Review Modal Component
+const ReviewModal = ({ product, onClose, onSubmit }) => {
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState('');
+  const [hoveredRating, setHoveredRating] = useState(0);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (rating === 0) {
+      alert('Please select a rating');
+      return;
+    }
+    onSubmit(rating, review);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Write a Review</h3>
+          <button 
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+          >
+            <X size={20} />
+          </button>
+        </div>
+        
+        <div className="flex items-center space-x-4 mb-4 p-3 bg-gray-50 rounded-lg">
+          <img 
+            src={product.image} 
+            alt={product.name}
+            className="w-12 h-12 object-cover rounded-lg"
+          />
+          <div>
+            <div className="font-medium">{product.name}</div>
+            <div className="text-sm text-gray-500">₹{product.price}</div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+            <div className="flex space-x-1">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  onMouseEnter={() => setHoveredRating(star)}
+                  onMouseLeave={() => setHoveredRating(0)}
+                  className="text-2xl transition-colors duration-200"
+                >
+                  <Star 
+                    size={24} 
+                    className={`${
+                      star <= (hoveredRating || rating) 
+                        ? 'text-yellow-400 fill-current' 
+                        : 'text-gray-300'
+                    }`} 
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Review (Optional)</label>
+            <textarea
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              placeholder="Share your experience with this product..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              rows={4}
+            />
+          </div>
+
+          <div className="flex space-x-3">
+            <button
+              type="submit"
+              className="flex-1 bg-black text-white py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
+            >
+              Submit Review
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 

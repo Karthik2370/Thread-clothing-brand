@@ -1,50 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, ChevronRight, Calendar, CreditCard } from 'lucide-react';
-
-const DUMMY_ORDERS = [
-  {
-    id: 'ORD12345',
-    orderNumber: 'THR001234567',
-    status: 'Delivered',
-    date: '2024-06-01',
-    items: [
-      { name: 'Essential Black Tee', qty: 1, price: 1299, image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80' },
-      { name: 'Minimalist White', qty: 2, price: 1099, image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=600&q=80' },
-    ],
-    total: 3497,
-    paymentMethod: 'Credit Card'
-  },
-  {
-    id: 'ORD12346',
-    orderNumber: 'THR001234568',
-    status: 'Shipped',
-    date: '2024-06-10',
-    items: [
-      { name: 'Geometric Print', qty: 1, price: 1499, image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80' },
-    ],
-    total: 1499,
-    paymentMethod: 'UPI'
-  },
-  {
-    id: 'ORD12347',
-    orderNumber: 'THR001234569',
-    status: 'Processing',
-    date: '2024-06-15',
-    items: [
-      { name: 'Vintage Fade', qty: 1, price: 1699, image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80' },
-      { name: 'Urban Oversized', qty: 1, price: 1899, image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80' },
-    ],
-    total: 3598,
-    paymentMethod: 'Digital Wallet'
-  },
-];
+import { Package, ChevronRight, Calendar, CreditCard, TrendingUp, Eye, EyeOff } from 'lucide-react';
+import { DUMMY_ORDERS } from '../data/mockData';
+import { useCart } from '../context/CartContext';
 
 const TABS = ['All', 'Processing', 'Shipped', 'Delivered'];
 
 const Orders = () => {
   const [tab, setTab] = useState('All');
+  const [showMetrics, setShowMetrics] = useState(false);
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -65,13 +31,66 @@ const Orders = () => {
     return <CreditCard size={14} className="text-gray-500" />;
   };
 
+  const handleReorder = (order) => {
+    // Add all items from the order to cart
+    order.items.forEach(item => {
+      // Find the product by name (in a real app, you'd use product ID)
+      const product = {
+        id: item.name.toLowerCase().replace(/\s+/g, '-'),
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        colors: ['black', 'white', 'gray'], // Default colors
+        sizes: ['XS', 'S', 'M', 'L', 'XL'] // Default sizes
+      };
+      
+      // Add to cart with default selections
+      for (let i = 0; i < item.qty; i++) {
+        addToCart(product, 'black', 'M'); // Default color and size
+      }
+    });
+    
+    alert(`${order.items.length} item(s) added to cart!`);
+  };
+
+  const totalSpent = DUMMY_ORDERS.reduce((sum, order) => sum + order.total, 0);
+  const deliveredOrders = DUMMY_ORDERS.filter(o => o.status === 'Delivered').length;
+
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-2 sm:px-0 flex flex-col items-center">
       <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-4 sm:p-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">My Orders</h2>
-          <Package size={24} className="text-gray-400" />
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setShowMetrics(!showMetrics)}
+              className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors duration-200"
+              title={showMetrics ? 'Hide Statistics' : 'Show Statistics'}
+            >
+              {showMetrics ? <EyeOff size={16} /> : <Eye size={16} />}
+              <span>{showMetrics ? 'Hide Stats' : 'Show Stats'}</span>
+            </button>
+            <Package size={24} className="text-gray-400" />
+          </div>
         </div>
+        
+        {/* Order Statistics - Conditionally shown */}
+        {showMetrics && (
+          <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-blue-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-blue-600">{DUMMY_ORDERS.length}</div>
+              <div className="text-sm text-blue-700">Total Orders</div>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-green-600">₹{totalSpent}</div>
+              <div className="text-sm text-green-700">Total Spent</div>
+            </div>
+            <div className="bg-purple-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-purple-600">{deliveredOrders}</div>
+              <div className="text-sm text-purple-700">Delivered</div>
+            </div>
+          </div>
+        )}
         
         {/* Tabs */}
         <div className="flex justify-center gap-2 mb-6 overflow-x-auto">
@@ -185,11 +204,11 @@ const Orders = () => {
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Handle reorder logic
-                        alert('Reorder functionality would be implemented here');
+                        handleReorder(order);
                       }}
-                      className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors duration-200"
+                      className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center gap-1"
                     >
+                      <TrendingUp size={14} />
                       Reorder
                     </button>
                   )}
@@ -210,24 +229,15 @@ const Orders = () => {
           </div>
         )}
 
-        {/* Order Statistics */}
+        {/* Helpful Tips */}
         {filtered.length > 0 && (
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-blue-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">{DUMMY_ORDERS.length}</div>
-              <div className="text-sm text-blue-700">Total Orders</div>
-            </div>
-            <div className="bg-green-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">
-                ₹{DUMMY_ORDERS.reduce((sum, order) => sum + order.total, 0)}
-              </div>
-              <div className="text-sm text-green-700">Total Spent</div>
-            </div>
-            <div className="bg-purple-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-purple-600">
-                {DUMMY_ORDERS.filter(o => o.status === 'Delivered').length}
-              </div>
-              <div className="text-sm text-purple-700">Delivered</div>
+          <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 className="font-semibold text-blue-900 mb-2">💡 Order Tips</h3>
+            <div className="text-sm text-blue-700 space-y-1">
+              <p>• Click on any order to view detailed tracking and information</p>
+              <p>• Use "Reorder" to quickly add previous purchases to your cart</p>
+              <p>• Track your shipments in real-time from the order details page</p>
+              {showMetrics && <p>• Toggle statistics visibility to focus on your orders</p>}
             </div>
           </div>
         )}

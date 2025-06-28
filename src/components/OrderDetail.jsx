@@ -2,96 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Package, Truck, CheckCircle, Clock, Star, MessageCircle, RotateCcw, Copy, Phone, Mail, MapPin, Calendar } from 'lucide-react';
 import { gsap } from 'gsap';
-
-// Mock order data - in a real app, this would come from an API
-const MOCK_ORDERS = {
-  'ORD12345': {
-    id: 'ORD12345',
-    orderNumber: 'THR001234567',
-    status: 'Delivered',
-    date: '2024-06-01',
-    deliveryDate: '2024-06-05',
-    estimatedDelivery: '2024-06-05',
-    trackingNumber: 'TRK789456123',
-    paymentMethod: 'Credit Card',
-    paymentId: 'pay_abc123xyz',
-    items: [
-      { 
-        id: '1',
-        name: 'Essential Black Tee', 
-        qty: 1, 
-        price: 1299,
-        color: 'Black',
-        size: 'M',
-        image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80'
-      },
-      { 
-        id: '2',
-        name: 'Minimalist White', 
-        qty: 2, 
-        price: 1099,
-        color: 'White',
-        size: 'L',
-        image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=600&q=80'
-      },
-    ],
-    total: 3497,
-    shippingAddress: {
-      name: 'John Doe',
-      address: '123 Main Street, Apartment 4B',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      zip: '400001',
-      phone: '+91 9876543210'
-    },
-    timeline: [
-      { status: 'Order Placed', date: '2024-06-01 10:30 AM', completed: true },
-      { status: 'Payment Confirmed', date: '2024-06-01 10:31 AM', completed: true },
-      { status: 'Order Processing', date: '2024-06-01 2:15 PM', completed: true },
-      { status: 'Shipped', date: '2024-06-02 9:00 AM', completed: true },
-      { status: 'Out for Delivery', date: '2024-06-05 8:30 AM', completed: true },
-      { status: 'Delivered', date: '2024-06-05 3:45 PM', completed: true }
-    ]
-  },
-  'ORD12346': {
-    id: 'ORD12346',
-    orderNumber: 'THR001234568',
-    status: 'Shipped',
-    date: '2024-06-10',
-    estimatedDelivery: '2024-06-15',
-    trackingNumber: 'TRK789456124',
-    paymentMethod: 'UPI',
-    paymentId: 'pay_def456uvw',
-    items: [
-      { 
-        id: '3',
-        name: 'Geometric Print', 
-        qty: 1, 
-        price: 1499,
-        color: 'Black',
-        size: 'L',
-        image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80'
-      },
-    ],
-    total: 1499,
-    shippingAddress: {
-      name: 'John Doe',
-      address: '123 Main Street, Apartment 4B',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      zip: '400001',
-      phone: '+91 9876543210'
-    },
-    timeline: [
-      { status: 'Order Placed', date: '2024-06-10 2:15 PM', completed: true },
-      { status: 'Payment Confirmed', date: '2024-06-10 2:16 PM', completed: true },
-      { status: 'Order Processing', date: '2024-06-10 5:30 PM', completed: true },
-      { status: 'Shipped', date: '2024-06-11 11:00 AM', completed: true },
-      { status: 'Out for Delivery', date: '', completed: false },
-      { status: 'Delivered', date: '', completed: false }
-    ]
-  }
-};
+import { MOCK_ORDERS } from '../data/mockData';
 
 const OrderDetail = () => {
   const { orderId } = useParams();
@@ -163,7 +74,6 @@ const OrderDetail = () => {
   };
 
   const handleReviewSubmit = (productId, rating, review) => {
-    // In a real app, this would submit to an API
     console.log('Review submitted:', { productId, rating, review });
     setShowReviewModal(false);
     setSelectedProduct(null);
