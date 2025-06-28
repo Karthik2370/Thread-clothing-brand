@@ -65,9 +65,12 @@ const ProductDetail = () => {
 
   if (!product) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center py-20">
-        <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
-        <button onClick={() => navigate(-1)} className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 flex items-center gap-2">
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center py-20 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Product Not Found</h2>
+        <button 
+          onClick={() => navigate(-1)} 
+          className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
+        >
           <ArrowLeft size={18} /> Go Back
         </button>
       </div>
@@ -110,35 +113,35 @@ const ProductDetail = () => {
   };
 
   return (
-    <section className="py-20 bg-white min-h-screen">
+    <section className="py-20 bg-white dark:bg-gray-900 min-h-screen transition-colors duration-300">
       <div ref={mainRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <button 
           onClick={() => navigate(-1)} 
-          className="mb-6 flex items-center text-gray-500 hover:text-black transition-colors duration-200"
+          className="mb-6 flex items-center text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors duration-200"
         >
           <ArrowLeft size={18} className="mr-2" /> Back
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
           {/* Product Images */}
           <div ref={imageRef} className="space-y-4">
             <div className="relative group">
               <LazyImage 
                 src={product.images[selectedImageIndex]} 
                 alt={product.name} 
-                className="rounded-lg shadow-lg w-full h-96 lg:h-[500px] object-cover" 
+                className="rounded-lg shadow-lg w-full h-64 sm:h-96 lg:h-[500px] object-cover" 
               />
               <button 
                 onClick={() => setIsWishlisted(!isWishlisted)}
-                className="absolute top-4 right-4 p-3 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200"
+                className="absolute top-4 right-4 p-2 sm:p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-all duration-200"
               >
                 <Heart 
-                  size={20} 
-                  className={`${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-600'}`} 
+                  size={18} 
+                  className={`${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-600 dark:text-gray-400'}`} 
                 />
               </button>
-              <button className="absolute top-4 left-4 p-3 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200">
-                <Share2 size={20} className="text-gray-600" />
+              <button className="absolute top-4 left-4 p-2 sm:p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-all duration-200">
+                <Share2 size={18} className="text-gray-600 dark:text-gray-400" />
               </button>
             </div>
             
@@ -148,7 +151,7 @@ const ProductDetail = () => {
                 <div 
                   key={idx} 
                   className={`aspect-square rounded-lg border-2 transition-colors duration-200 cursor-pointer ${
-                    selectedImageIndex === idx ? 'border-black' : 'border-transparent hover:border-gray-300'
+                    selectedImageIndex === idx ? 'border-black dark:border-white' : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                   onClick={() => setSelectedImageIndex(idx)}
                 >
@@ -165,27 +168,27 @@ const ProductDetail = () => {
           {/* Product Details */}
           <div ref={detailsRef} className="space-y-6">
             <div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-black mb-2">{product.name}</h1>
-              <div className="flex items-center space-x-4 mb-4">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black dark:text-white mb-2 transition-colors duration-300">{product.name}</h1>
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4">
                 <div className="flex items-center space-x-1">
                   {renderStars(averageRating)}
-                  <span className="text-sm text-gray-600 ml-2">
+                  <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">
                     ({reviews.length} review{reviews.length !== 1 ? 's' : ''})
                   </span>
                 </div>
                 {product.featured && (
-                  <span className="bg-black text-white px-3 py-1 text-xs font-medium rounded-full">
+                  <span className="bg-black dark:bg-white text-white dark:text-black px-3 py-1 text-xs font-medium rounded-full w-fit">
                     Featured
                   </span>
                 )}
               </div>
-              <p className="text-xl text-gray-600 mb-6">{product.description}</p>
+              <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-6 transition-colors duration-300">{product.description}</p>
             </div>
 
-            <div className="flex items-center space-x-4 mb-6">
-              <span className="text-3xl font-bold text-black">₹{product.price}</span>
-              <span className="text-lg text-gray-500 line-through">₹{Math.round(product.price * 1.3)}</span>
-              <span className="bg-green-100 text-green-800 px-2 py-1 text-sm font-medium rounded">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-6">
+              <span className="text-2xl sm:text-3xl font-bold text-black dark:text-white transition-colors duration-300">₹{product.price}</span>
+              <span className="text-lg text-gray-500 dark:text-gray-400 line-through">₹{Math.round(product.price * 1.3)}</span>
+              <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 text-sm font-medium rounded w-fit">
                 23% OFF
               </span>
             </div>
@@ -193,16 +196,16 @@ const ProductDetail = () => {
             {/* Color Selection */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Color: {selectedColor}</span>
-                <span className="text-xs text-gray-500">{product.colors.length} colors available</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Color: {selectedColor}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">{product.colors.length} colors available</span>
               </div>
               <div className="flex space-x-3">
                 {product.colors.map((color, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedColor(color)}
-                    className={`w-10 h-10 rounded-full border-2 transition-all duration-200 ${
-                      color === selectedColor ? 'border-black scale-110' : 'border-gray-300 hover:border-gray-400'
+                    className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 transition-all duration-200 ${
+                      color === selectedColor ? 'border-black dark:border-white scale-110' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
                     }`}
                     style={{ 
                       backgroundColor: color === 'white' ? '#fff' : 
@@ -218,10 +221,10 @@ const ProductDetail = () => {
             {/* Size Selection */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Size: {selectedSize}</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Size: {selectedSize}</span>
                 <button 
                   onClick={() => setShowSizeGuide(true)}
-                  className="text-xs text-blue-600 hover:text-blue-800 underline flex items-center gap-1"
+                  className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline flex items-center gap-1"
                 >
                   <Ruler size={12} />
                   Size Guide
@@ -232,10 +235,10 @@ const ProductDetail = () => {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`py-3 text-sm border rounded-lg font-medium transition-all duration-200 ${
+                    className={`py-2 sm:py-3 text-xs sm:text-sm border rounded-lg font-medium transition-all duration-200 ${
                       size === selectedSize 
-                        ? 'border-black bg-black text-white' 
-                        : 'border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50'
+                        ? 'border-black dark:border-white bg-black dark:bg-white text-white dark:text-black' 
+                        : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
                     }`}
                   >
                     {size}
@@ -246,18 +249,18 @@ const ProductDetail = () => {
 
             {/* Quantity Selection */}
             <div className="space-y-3">
-              <span className="text-sm font-medium text-gray-700">Quantity</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Quantity</span>
               <div className="flex items-center space-x-3">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors duration-200"
+                  className="w-10 h-10 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-900 dark:text-white"
                 >
                   -
                 </button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
+                <span className="w-12 text-center font-medium text-gray-900 dark:text-white">{quantity}</span>
                 <button 
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors duration-200"
+                  className="w-10 h-10 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-900 dark:text-white"
                 >
                   +
                 </button>
@@ -268,35 +271,35 @@ const ProductDetail = () => {
             <div className="space-y-4">
               <button
                 onClick={handleAddToCart}
-                className="add-to-cart-btn w-full flex items-center justify-center gap-3 px-8 py-4 bg-black text-white rounded-lg font-medium text-lg hover:bg-gray-800 transition-colors duration-200 shadow-lg"
+                className="add-to-cart-btn w-full flex items-center justify-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-black dark:bg-white text-white dark:text-black rounded-lg font-medium text-base sm:text-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200 shadow-lg"
               >
-                <ShoppingBag size={22} /> Add to Cart - ₹{product.price * quantity}
+                <ShoppingBag size={20} /> Add to Cart - ₹{product.price * quantity}
               </button>
               
               <div className="grid grid-cols-2 gap-3">
-                <button className="flex items-center justify-center gap-2 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200">
-                  <Heart size={18} />
-                  Wishlist
+                <button className="flex items-center justify-center gap-2 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+                  <Heart size={16} />
+                  <span className="hidden sm:inline">Wishlist</span>
                 </button>
-                <button className="flex items-center justify-center gap-2 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200">
-                  <Share2 size={18} />
-                  Share
+                <button className="flex items-center justify-center gap-2 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+                  <Share2 size={16} />
+                  <span className="hidden sm:inline">Share</span>
                 </button>
               </div>
             </div>
 
             {/* Product Features */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-gray-200">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <Truck size={16} className="text-green-600" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                <Truck size={16} className="text-green-600 dark:text-green-400" />
                 <span>Free Delivery</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <RotateCcw size={16} className="text-blue-600" />
+              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                <RotateCcw size={16} className="text-blue-600 dark:text-blue-400" />
                 <span>30-Day Returns</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <Shield size={16} className="text-purple-600" />
+              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                <Shield size={16} className="text-purple-600 dark:text-purple-400" />
                 <span>2-Year Warranty</span>
               </div>
             </div>
@@ -305,8 +308,8 @@ const ProductDetail = () => {
 
         {/* Product Information Tabs */}
         <div className="mb-16">
-          <div className="border-b border-gray-200 mb-6">
-            <nav className="-mb-px flex space-x-8">
+          <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
+            <nav className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto">
               {[
                 { id: 'description', label: 'Description' },
                 { id: 'reviews', label: `Reviews (${reviews.length})` },
@@ -315,10 +318,10 @@ const ProductDetail = () => {
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 whitespace-nowrap ${
                     activeTab === id
-                      ? 'border-black text-black'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-black dark:border-white text-black dark:text-white'
+                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                 >
                   {label}
@@ -328,192 +331,194 @@ const ProductDetail = () => {
           </div>
 
           {/* Tab Content */}
-          {activeTab === 'description' && (
-            <div className="prose max-w-none">
-              <h3 className="text-lg font-semibold mb-4">Product Details</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <h4 className="font-medium mb-3">Features</h4>
-                  <ul className="space-y-2 text-gray-600">
-                    <li>• Premium 100% cotton blend fabric</li>
-                    <li>• Pre-shrunk for consistent fit</li>
-                    <li>• Reinforced seams for durability</li>
-                    <li>• Tagless design for comfort</li>
-                    <li>• Machine washable</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-medium mb-3">Care Instructions</h4>
-                  <ul className="space-y-2 text-gray-600">
-                    <li>• Machine wash cold with like colors</li>
-                    <li>• Use non-chlorine bleach when needed</li>
-                    <li>• Tumble dry low heat</li>
-                    <li>• Iron on low temperature if needed</li>
-                    <li>• Do not dry clean</li>
-                  </ul>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 transition-colors duration-300">
+            {activeTab === 'description' && (
+              <div className="prose max-w-none">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Product Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <h4 className="font-medium mb-3 text-gray-900 dark:text-white">Features</h4>
+                    <ul className="space-y-2 text-gray-600 dark:text-gray-400">
+                      <li>• Premium 100% cotton blend fabric</li>
+                      <li>• Pre-shrunk for consistent fit</li>
+                      <li>• Reinforced seams for durability</li>
+                      <li>• Tagless design for comfort</li>
+                      <li>• Machine washable</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-3 text-gray-900 dark:text-white">Care Instructions</h4>
+                    <ul className="space-y-2 text-gray-600 dark:text-gray-400">
+                      <li>• Machine wash cold with like colors</li>
+                      <li>• Use non-chlorine bleach when needed</li>
+                      <li>• Tumble dry low heat</li>
+                      <li>• Iron on low temperature if needed</li>
+                      <li>• Do not dry clean</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === 'reviews' && (
-            <div>
-              {reviews.length > 0 ? (
-                <>
-                  {/* Review Summary */}
-                  <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <div className="flex items-center space-x-2 mb-2">
-                          <span className="text-3xl font-bold">{averageRating.toFixed(1)}</span>
-                          <div className="flex items-center space-x-1">
-                            {renderStars(averageRating)}
+            {activeTab === 'reviews' && (
+              <div>
+                {reviews.length > 0 ? (
+                  <>
+                    {/* Review Summary */}
+                    <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 sm:p-6 mb-6 transition-colors duration-300">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-4 sm:space-y-0">
+                        <div>
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{averageRating.toFixed(1)}</span>
+                            <div className="flex items-center space-x-1">
+                              {renderStars(averageRating)}
+                            </div>
                           </div>
+                          <p className="text-gray-600 dark:text-gray-400">Based on {reviews.length} review{reviews.length !== 1 ? 's' : ''}</p>
                         </div>
-                        <p className="text-gray-600">Based on {reviews.length} review{reviews.length !== 1 ? 's' : ''}</p>
-                      </div>
-                      <button 
-                        onClick={() => setShowReviewModal(true)}
-                        className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
-                      >
-                        Write a Review
-                      </button>
-                    </div>
-                    
-                    {/* Rating Breakdown */}
-                    <div className="space-y-2">
-                      {[5, 4, 3, 2, 1].map(rating => {
-                        const count = reviews.filter(r => r.rating === rating).length;
-                        const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
-                        return (
-                          <div key={rating} className="flex items-center space-x-3">
-                            <span className="text-sm w-8">{rating}★</span>
-                            <div className="flex-1 bg-gray-200 rounded-full h-2">
-                              <div 
-                                className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                                style={{ width: `${percentage}%` }}
-                              />
-                            </div>
-                            <span className="text-sm text-gray-600 w-8">{count}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Individual Reviews */}
-                  <div className="space-y-6">
-                    {(showAllReviews ? reviews : reviews.slice(0, 3)).map(review => (
-                      <div key={review.id} className="border-b border-gray-200 pb-6">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <div className="flex items-center space-x-2 mb-1">
-                              <span className="font-medium">{review.user}</span>
-                              {review.verified && (
-                                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                                  Verified Purchase
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <div className="flex items-center space-x-1">
-                                {renderStars(review.rating)}
-                              </div>
-                              <span className="text-sm text-gray-500">
-                                {new Date(review.date).toLocaleDateString('en-IN')}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <p className="text-gray-700 mb-3">{review.review}</p>
-                        <button className="text-sm text-gray-500 hover:text-gray-700">
-                          Helpful ({review.helpful})
+                        <button 
+                          onClick={() => setShowReviewModal(true)}
+                          className="bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200 w-full sm:w-auto"
+                        >
+                          Write a Review
                         </button>
                       </div>
-                    ))}
-                  </div>
-
-                  {reviews.length > 3 && (
-                    <div className="text-center mt-6">
-                      <button 
-                        onClick={() => setShowAllReviews(!showAllReviews)}
-                        className="flex items-center space-x-2 mx-auto px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-                      >
-                        <span>{showAllReviews ? 'Show Less' : `Show All ${reviews.length} Reviews`}</span>
-                        {showAllReviews ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                      </button>
+                      
+                      {/* Rating Breakdown */}
+                      <div className="space-y-2">
+                        {[5, 4, 3, 2, 1].map(rating => {
+                          const count = reviews.filter(r => r.rating === rating).length;
+                          const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+                          return (
+                            <div key={rating} className="flex items-center space-x-3">
+                              <span className="text-sm w-8 text-gray-900 dark:text-white">{rating}★</span>
+                              <div className="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                <div 
+                                  className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                                  style={{ width: `${percentage}%` }}
+                                />
+                              </div>
+                              <span className="text-sm text-gray-600 dark:text-gray-400 w-8">{count}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  )}
-                </>
-              ) : (
-                <div className="text-center py-12">
-                  <Star size={48} className="mx-auto text-gray-300 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No reviews yet</h3>
-                  <p className="text-gray-500 mb-6">Be the first to review this product</p>
-                  <button 
-                    onClick={() => setShowReviewModal(true)}
-                    className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
-                  >
-                    Write a Review
-                  </button>
+
+                    {/* Individual Reviews */}
+                    <div className="space-y-6">
+                      {(showAllReviews ? reviews : reviews.slice(0, 3)).map(review => (
+                        <div key={review.id} className="border-b border-gray-200 dark:border-gray-700 pb-6">
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <div className="flex items-center space-x-2 mb-1">
+                                <span className="font-medium text-gray-900 dark:text-white">{review.user}</span>
+                                {review.verified && (
+                                  <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded-full">
+                                    Verified Purchase
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <div className="flex items-center space-x-1">
+                                  {renderStars(review.rating)}
+                                </div>
+                                <span className="text-sm text-gray-500 dark:text-gray-400">
+                                  {new Date(review.date).toLocaleDateString('en-IN')}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-gray-700 dark:text-gray-300 mb-3">{review.review}</p>
+                          <button className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                            Helpful ({review.helpful})
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {reviews.length > 3 && (
+                      <div className="text-center mt-6">
+                        <button 
+                          onClick={() => setShowAllReviews(!showAllReviews)}
+                          className="flex items-center space-x-2 mx-auto px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-900 dark:text-white"
+                        >
+                          <span>{showAllReviews ? 'Show Less' : `Show All ${reviews.length} Reviews`}</span>
+                          {showAllReviews ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-center py-12">
+                    <Star size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No reviews yet</h3>
+                    <p className="text-gray-500 dark:text-gray-400 mb-6">Be the first to review this product</p>
+                    <button 
+                      onClick={() => setShowReviewModal(true)}
+                      className="bg-black dark:bg-white text-white dark:text-black px-6 py-3 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200"
+                    >
+                      Write a Review
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'shipping' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Shipping Information</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-start space-x-3">
+                      <Truck size={20} className="text-green-600 dark:text-green-400 mt-1" />
+                      <div>
+                        <h4 className="font-medium text-gray-900 dark:text-white">Free Standard Delivery</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">On orders over ₹2000. Delivered in 2-5 business days.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <Truck size={20} className="text-blue-600 dark:text-blue-400 mt-1" />
+                      <div>
+                        <h4 className="font-medium text-gray-900 dark:text-white">Express Delivery</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">₹99 for next-day delivery in major cities.</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
-          )}
-
-          {activeTab === 'shipping' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Shipping Information</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <Truck size={20} className="text-green-600 mt-1" />
-                    <div>
-                      <h4 className="font-medium">Free Standard Delivery</h4>
-                      <p className="text-sm text-gray-600">On orders over ₹2000. Delivered in 2-5 business days.</p>
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Returns & Exchanges</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-start space-x-3">
+                      <RotateCcw size={20} className="text-purple-600 dark:text-purple-400 mt-1" />
+                      <div>
+                        <h4 className="font-medium text-gray-900 dark:text-white">30-Day Returns</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Free returns within 30 days of purchase.</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Truck size={20} className="text-blue-600 mt-1" />
-                    <div>
-                      <h4 className="font-medium">Express Delivery</h4>
-                      <p className="text-sm text-gray-600">₹99 for next-day delivery in major cities.</p>
+                    <div className="flex items-start space-x-3">
+                      <Shield size={20} className="text-orange-600 dark:text-orange-400 mt-1" />
+                      <div>
+                        <h4 className="font-medium text-gray-900 dark:text-white">Quality Guarantee</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">2-year warranty against manufacturing defects.</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Returns & Exchanges</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <RotateCcw size={20} className="text-purple-600 mt-1" />
-                    <div>
-                      <h4 className="font-medium">30-Day Returns</h4>
-                      <p className="text-sm text-gray-600">Free returns within 30 days of purchase.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Shield size={20} className="text-orange-600 mt-1" />
-                    <div>
-                      <h4 className="font-medium">Quality Guarantee</h4>
-                      <p className="text-sm text-gray-600">2-year warranty against manufacturing defects.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Related Products */}
         {related.length > 0 && (
           <div>
-            <h2 className="text-2xl font-bold mb-8 text-black">You may also like</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <h2 className="text-xl sm:text-2xl font-bold mb-8 text-black dark:text-white transition-colors duration-300">You may also like</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {related.map((rel) => (
                 <div 
                   key={rel.id} 
-                  className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300 group"
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 group"
                   onClick={() => navigate(`/product/${rel.id}`)}
                 >
                   <div className="relative overflow-hidden">
@@ -523,22 +528,22 @@ const ProductDetail = () => {
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
                     />
                     <div className="absolute top-3 right-3">
-                      <button className="p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200">
-                        <Heart size={16} className="text-gray-600" />
+                      <button className="p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-all duration-200">
+                        <Heart size={16} className="text-gray-600 dark:text-gray-400" />
                       </button>
                     </div>
                   </div>
                   <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-900 mb-2">{rel.name}</h3>
+                    <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">{rel.name}</h3>
                     <div className="flex items-center space-x-2 mb-2">
                       <div className="flex items-center space-x-1">
                         {renderStars(4.5)}
                       </div>
-                      <span className="text-sm text-gray-500">(24)</span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">(24)</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="text-xl font-bold text-gray-900">₹{rel.price}</span>
-                      <span className="text-sm text-gray-500 line-through">₹{Math.round(rel.price * 1.3)}</span>
+                      <span className="text-xl font-bold text-gray-900 dark:text-white">₹{rel.price}</span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400 line-through">₹{Math.round(rel.price * 1.3)}</span>
                     </div>
                   </div>
                 </div>
@@ -569,40 +574,40 @@ const ProductDetail = () => {
 const SizeGuideModal = ({ onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto transition-colors duration-300">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold flex items-center gap-2">
+          <h3 className="text-xl font-semibold flex items-center gap-2 text-gray-900 dark:text-white">
             <Ruler size={20} />
             Size Guide
           </h3>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors duration-200"
           >
-            <X size={20} />
+            <X size={20} className="text-gray-900 dark:text-white" />
           </button>
         </div>
         
         {/* Size Chart */}
         <div className="mb-6">
-          <h4 className="font-medium mb-4">Size Chart (in inches)</h4>
+          <h4 className="font-medium mb-4 text-gray-900 dark:text-white">Size Chart (in inches)</h4>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-300">
+            <table className="w-full border-collapse border border-gray-300 dark:border-gray-600">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="border border-gray-300 px-4 py-2 text-left">Size</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Chest</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Length</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Shoulder</th>
+                <tr className="bg-gray-50 dark:bg-gray-700">
+                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-gray-900 dark:text-white">Size</th>
+                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-gray-900 dark:text-white">Chest</th>
+                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-gray-900 dark:text-white">Length</th>
+                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-gray-900 dark:text-white">Shoulder</th>
                 </tr>
               </thead>
               <tbody>
                 {Object.entries(SIZE_GUIDE.measurements).map(([size, measurements]) => (
                   <tr key={size}>
-                    <td className="border border-gray-300 px-4 py-2 font-medium">{size}</td>
-                    <td className="border border-gray-300 px-4 py-2">{measurements.chest}</td>
-                    <td className="border border-gray-300 px-4 py-2">{measurements.length}</td>
-                    <td className="border border-gray-300 px-4 py-2">{measurements.shoulder}</td>
+                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-medium text-gray-900 dark:text-white">{size}</td>
+                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300">{measurements.chest}</td>
+                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300">{measurements.length}</td>
+                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300">{measurements.shoulder}</td>
                   </tr>
                 ))}
               </tbody>
@@ -612,21 +617,21 @@ const SizeGuideModal = ({ onClose }) => {
 
         {/* Fitting Tips */}
         <div>
-          <h4 className="font-medium mb-3">Fitting Tips</h4>
-          <ul className="space-y-2 text-sm text-gray-600">
+          <h4 className="font-medium mb-3 text-gray-900 dark:text-white">Fitting Tips</h4>
+          <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
             {SIZE_GUIDE.tips.map((tip, index) => (
               <li key={index} className="flex items-start">
-                <span className="text-blue-600 mr-2">•</span>
+                <span className="text-blue-600 dark:text-blue-400 mr-2">•</span>
                 {tip}
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-gray-200">
+        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
           <button
             onClick={onClose}
-            className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
+            className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200"
           >
             Got it!
           </button>
@@ -653,32 +658,32 @@ const ReviewModal = ({ product, onClose, onSubmit }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 transition-colors duration-300">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">Write a Review</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Write a Review</h3>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors duration-200"
           >
-            <X size={20} />
+            <X size={20} className="text-gray-900 dark:text-white" />
           </button>
         </div>
         
-        <div className="flex items-center space-x-4 mb-4 p-3 bg-gray-50 rounded-lg">
+        <div className="flex items-center space-x-4 mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <img 
             src={product.image} 
             alt={product.name}
             className="w-12 h-12 object-cover rounded-lg"
           />
           <div>
-            <div className="font-medium">{product.name}</div>
-            <div className="text-sm text-gray-500">₹{product.price}</div>
+            <div className="font-medium text-gray-900 dark:text-white">{product.name}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">₹{product.price}</div>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rating</label>
             <div className="flex space-x-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -694,7 +699,7 @@ const ReviewModal = ({ product, onClose, onSubmit }) => {
                     className={`${
                       star <= (hoveredRating || rating) 
                         ? 'text-yellow-400 fill-current' 
-                        : 'text-gray-300'
+                        : 'text-gray-300 dark:text-gray-600'
                     }`} 
                   />
                 </button>
@@ -703,12 +708,12 @@ const ReviewModal = ({ product, onClose, onSubmit }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Review (Optional)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Review (Optional)</label>
             <textarea
               value={review}
               onChange={(e) => setReview(e.target.value)}
               placeholder="Share your experience with this product..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-colors duration-300"
               rows={4}
             />
           </div>
@@ -716,14 +721,14 @@ const ReviewModal = ({ product, onClose, onSubmit }) => {
           <div className="flex space-x-3">
             <button
               type="submit"
-              className="flex-1 bg-black text-white py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
+              className="flex-1 bg-black dark:bg-white text-white dark:text-black py-2 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200"
             >
               Submit Review
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200"
+              className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
             >
               Cancel
             </button>

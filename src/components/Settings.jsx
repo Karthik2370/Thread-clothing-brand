@@ -158,7 +158,11 @@ const Settings = () => {
               onChange={toggleTheme}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
+            <div className={`w-11 h-6 rounded-full peer peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white transition-colors duration-300 ${
+              isDarkMode 
+                ? 'bg-blue-600 dark:bg-blue-500' 
+                : 'bg-gray-200 dark:bg-gray-700'
+            }`}></div>
           </label>
         </div>
       </div>
@@ -203,11 +207,40 @@ const Settings = () => {
     </div>
   );
 
+  const renderNotificationsSection = () => (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Notification Preferences</h3>
+      
+      {Object.entries(notifications).map(([key, value]) => (
+        <div key={key} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 transition-colors duration-300">
+          <div>
+            <h4 className="font-medium text-gray-900 dark:text-white capitalize">{key.replace(/([A-Z])/g, ' $1')}</h4>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Get notified about {key.toLowerCase()}</p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={value}
+              onChange={() => setNotifications(prev => ({ ...prev, [key]: !value }))}
+              className="sr-only peer"
+            />
+            <div className={`w-11 h-6 rounded-full peer peer-focus:outline-none after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white transition-colors duration-300 ${
+              value 
+                ? 'bg-blue-600 dark:bg-blue-500' 
+                : 'bg-gray-200 dark:bg-gray-700'
+            }`}></div>
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+
   // Add similar dark mode styling to other sections...
   const renderContent = () => {
     switch (activeSection) {
       case 'account': return renderAccountSection();
       case 'preferences': return renderPreferencesSection();
+      case 'notifications': return renderNotificationsSection();
       // Add other sections with dark mode styling...
       default: return renderAccountSection();
     }
