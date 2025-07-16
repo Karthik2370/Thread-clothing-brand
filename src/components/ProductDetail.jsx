@@ -21,6 +21,7 @@ const ProductDetail = () => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
   const product = products.find(p => p.id === id);
   const mainRef = useRef();
   const imageRef = useRef();
