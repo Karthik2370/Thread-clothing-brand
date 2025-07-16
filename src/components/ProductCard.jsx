@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import LazyImage from './LazyImage';
 import { gsap } from 'gsap';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +11,7 @@ const ProductCard = ({ product, index }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const cardRef = useRef();
   const imageRef = useRef();
   const contentRef = useRef();
@@ -70,6 +72,21 @@ const ProductCard = ({ product, index }) => {
     });
   };
 
+  const handleWishlistToggle = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+    
+    // Add wishlist animation
+    gsap.to(cardRef.current, {
+      scale: 0.98,
+      duration: 0.1,
+      yoyo: true,
+      repeat: 1,
+      ease: 'power2.inOut'
+    });
+  };
+
   return (
     <div
       ref={cardRef}
@@ -93,8 +110,18 @@ const ProductCard = ({ product, index }) => {
           isHovered ? 'opacity-100' : 'opacity-0'
         }`}>
           <div className="flex space-x-3">
-            <button className="p-3 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
-              <Heart size={20} className="text-gray-700 dark:text-gray-300" />
+            <button 
+              onClick={handleWishlistToggle}
+              className="p-3 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+            >
+              <Heart 
+                size={20} 
+                className={`${
+                  isInWishlist(product.id) 
+                    ? 'text-red-500 fill-current' 
+                    : 'text-gray-700 dark:text-gray-300'
+                }`} 
+              />
             </button>
             <button 
               onClick={e => { e.stopPropagation(); handleAddToCart(e); }}

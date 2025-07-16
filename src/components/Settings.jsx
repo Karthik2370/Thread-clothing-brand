@@ -31,6 +31,7 @@ import { useTheme } from '../context/ThemeContext';
 const Settings = () => {
   const [activeSection, setActiveSection] = useState('account');
   const { isDarkMode, toggleTheme } = useTheme();
+  
   const [notifications, setNotifications] = useState({
     orderUpdates: true,
     promotions: false,
@@ -531,13 +532,13 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-2 sm:px-0 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-10 px-2 sm:px-0 transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-colors duration-300">
           <div className="flex flex-col lg:flex-row">
             {/* Mobile Section Selector */}
             <div className="lg:hidden border-b border-gray-200 dark:border-gray-700">
-              <div className="p-4">
+              <div className="p-4 pt-6">
                 <select 
                   value={activeSection}
                   onChange={(e) => setActiveSection(e.target.value)}
@@ -552,7 +553,7 @@ const Settings = () => {
 
             {/* Desktop Sidebar */}
             <div className="hidden lg:block lg:w-1/4 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-colors duration-300">
-              <div className="p-6">
+              <div className="p-6 pt-8">
                 <h2 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">Settings</h2>
                 <nav className="space-y-2">
                   {settingsSections.map(({ id, label, icon: Icon }) => (
@@ -574,7 +575,7 @@ const Settings = () => {
             </div>
 
             {/* Main Content */}
-            <div className="lg:w-3/4 p-4 sm:p-6">
+            <div className="lg:w-3/4 p-4 sm:p-6 pt-6 sm:pt-8">
               {renderContent()}
             </div>
           </div>

@@ -280,18 +280,19 @@ export const MOCK_REVIEWS = {
 
 export const SIZE_GUIDE = {
   measurements: {
-    'XS': { chest: '34-36', length: '26', shoulder: '16' },
-    'S': { chest: '36-38', length: '27', shoulder: '17' },
-    'M': { chest: '38-40', length: '28', shoulder: '18' },
-    'L': { chest: '40-42', length: '29', shoulder: '19' },
-    'XL': { chest: '42-44', length: '30', shoulder: '20' },
-    'XXL': { chest: '44-46', length: '31', shoulder: '21' }
+    'XS': { chest: '34-36', length: '26', shoulder: '16', sleeve: '8' },
+    'S': { chest: '36-38', length: '27', shoulder: '17', sleeve: '8.5' },
+    'M': { chest: '38-40', length: '28', shoulder: '18', sleeve: '9' },
+    'L': { chest: '40-42', length: '29', shoulder: '19', sleeve: '9.5' },
+    'XL': { chest: '42-44', length: '30', shoulder: '20', sleeve: '10' },
+    'XXL': { chest: '44-46', length: '31', shoulder: '21', sleeve: '10.5' }
   },
-  tips: [
-    'All measurements are in inches',
-    'Chest measurement is taken across the chest at the widest point',
-    'Length is measured from shoulder to bottom hem',
-    'For the best fit, compare with a similar garment you own',
-    'If you\'re between sizes, we recommend sizing up for a relaxed fit'
+  fitGuide: [
+    { size: 'XS', description: 'Extra Small - Slim fit for petite frames' },
+    { size: 'S', description: 'Small - Regular fit for smaller builds' },
+    { size: 'M', description: 'Medium - Standard fit for average builds' },
+    { size: 'L', description: 'Large - Comfortable fit for larger builds' },
+    { size: 'XL', description: 'Extra Large - Relaxed fit for bigger frames' },
+    { size: 'XXL', description: 'Double XL - Loose fit for maximum comfort' }
   ]
 };

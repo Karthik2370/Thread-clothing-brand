@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CartProvider } from './context/CartContext';
+import { WishlistProvider } from './context/WishlistContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -36,14 +37,16 @@ function App({ children }) {
 
   return (
     <ThemeProvider>
-      <CartProvider>
-        <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <Cart />
-        </div>
-      </CartProvider>
+      <WishlistProvider>
+        <CartProvider>
+          <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+            <Header />
+            <main>{children}</main>
+            <Footer />
+            <Cart />
+          </div>
+        </CartProvider>
+      </WishlistProvider>
     </ThemeProvider>
   );
 }

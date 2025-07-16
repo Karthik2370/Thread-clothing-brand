@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { products } from '../data/products';
 import { MOCK_REVIEWS, SIZE_GUIDE } from '../data/mockData';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { gsap } from 'gsap';
 import LazyImage from './LazyImage';
 import { ShoppingBag, ArrowLeft, Star, Heart, Share2, Truck, Shield, RotateCcw, ChevronDown, ChevronUp, X, Ruler } from 'lucide-react';
@@ -11,6 +12,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [selectedColor, setSelectedColor] = useState();
   const [selectedSize, setSelectedSize] = useState();
   const [quantity, setQuantity] = useState(1);
@@ -18,7 +20,6 @@ const ProductDetail = () => {
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const product = products.find(p => p.id === id);
   const mainRef = useRef();
@@ -63,6 +64,24 @@ const ProductDetail = () => {
     }
   }, [product]);
 
+  // Get current images based on selected color
+  const getCurrentImages = () => {
+    if (!product || !selectedColor) return [];
+    
+    // Handle both old array format and new object format
+    if (Array.isArray(product.images)) {
+      return product.images;
+    } else if (product.images && product.images[selectedColor]) {
+      return product.images[selectedColor];
+    }
+    
+    // Fallback to first available color images
+    const firstColor = Object.keys(product.images || {})[0];
+    return firstColor ? product.images[firstColor] : [];
+  };
+
+  const currentImages = getCurrentImages();
+
   if (!product) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center py-20 bg-white dark:bg-gray-900 transition-colors duration-300">
@@ -88,6 +107,22 @@ const ProductDetail = () => {
       repeat: 1,
       ease: 'power2.inOut'
     });
+  };
+
+  const handleWishlistToggle = () => {
+    toggleWishlist(product);
+    gsap.to(detailsRef.current?.querySelector('.wishlist-btn'), {
+      scale: 0.9,
+      duration: 0.1,
+      yoyo: true,
+      repeat: 1,
+      ease: 'power2.inOut'
+    });
+  };
+
+  const handleColorChange = (color) => {
+    setSelectedColor(color);
+    setSelectedImageIndex(0); // Reset to first image when color changes
   };
 
   const renderStars = (rating) => {
@@ -127,17 +162,17 @@ const ProductDetail = () => {
           <div ref={imageRef} className="space-y-4">
             <div className="relative group">
               <LazyImage 
-                src={product.images[selectedImageIndex]} 
+                src={currentImages[selectedImageIndex] || product.image} 
                 alt={product.name} 
                 className="rounded-lg shadow-lg w-full h-64 sm:h-96 lg:h-[500px] object-cover" 
               />
               <button 
-                onClick={() => setIsWishlisted(!isWishlisted)}
-                className="absolute top-4 right-4 p-2 sm:p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-all duration-200"
+                onClick={handleWishlistToggle}
+                className="wishlist-btn absolute top-4 right-4 p-2 sm:p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-all duration-200"
               >
                 <Heart 
                   size={18} 
-                  className={`${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-600 dark:text-gray-400'}`} 
+                  className={`${isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-600 dark:text-gray-400'}`} 
                 />
               </button>
               <button className="absolute top-4 left-4 p-2 sm:p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-all duration-200">
@@ -147,7 +182,7 @@ const ProductDetail = () => {
             
             {/* Image Thumbnails */}
             <div className="grid grid-cols-4 gap-2">
-              {product.images.map((image, idx) => (
+              {currentImages.map((image, idx) => (
                 <div 
                   key={idx} 
                   className={`aspect-square rounded-lg border-2 transition-colors duration-200 cursor-pointer ${
@@ -203,7 +238,7 @@ const ProductDetail = () => {
                 {product.colors.map((color, idx) => (
                   <button
                     key={idx}
-                    onClick={() => setSelectedColor(color)}
+                   onClick={() => handleColorChange(color)}
                     className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 transition-all duration-200 ${
                       color === selectedColor ? 'border-black dark:border-white scale-110' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
                     }`}
@@ -278,7 +313,10 @@ const ProductDetail = () => {
               
               <div className="grid grid-cols-2 gap-3">
                 <button className="flex items-center justify-center gap-2 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <Heart size={16} />
+                  <Heart 
+                    size={16} 
+                    className={isInWishlist(product.id) ? 'fill-current text-red-500' : ''} 
+                  />
                   <span className="hidden sm:inline">Wishlist</span>
                 </button>
                 <button className="flex items-center justify-center gap-2 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
@@ -574,7 +612,7 @@ const ProductDetail = () => {
 const SizeGuideModal = ({ onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto transition-colors duration-300">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto transition-colors duration-300">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold flex items-center gap-2 text-gray-900 dark:text-white">
             <Ruler size={20} />
@@ -588,26 +626,29 @@ const SizeGuideModal = ({ onClose }) => {
           </button>
         </div>
         
-        {/* Size Chart */}
+        {/* Measurement Chart */}
         <div className="mb-6">
-          <h4 className="font-medium mb-4 text-gray-900 dark:text-white">Size Chart (in inches)</h4>
+          <h4 className="font-semibold mb-4 text-gray-900 dark:text-white text-lg">Measurement Chart</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">All measurements are in inches</p>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-300 dark:border-gray-600">
-              <thead>
-                <tr className="bg-gray-50 dark:bg-gray-700">
-                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-gray-900 dark:text-white">Size</th>
-                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-gray-900 dark:text-white">Chest</th>
-                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-gray-900 dark:text-white">Length</th>
-                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-gray-900 dark:text-white">Shoulder</th>
+            <table className="w-full border-collapse border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th className="border border-gray-200 dark:border-gray-700 px-4 py-3 text-left text-gray-900 dark:text-white font-semibold">Size</th>
+                  <th className="border border-gray-200 dark:border-gray-700 px-4 py-3 text-left text-gray-900 dark:text-white font-semibold">Chest</th>
+                  <th className="border border-gray-200 dark:border-gray-700 px-4 py-3 text-left text-gray-900 dark:text-white font-semibold">Length</th>
+                  <th className="border border-gray-200 dark:border-gray-700 px-4 py-3 text-left text-gray-900 dark:text-white font-semibold">Shoulder</th>
+                  <th className="border border-gray-200 dark:border-gray-700 px-4 py-3 text-left text-gray-900 dark:text-white font-semibold">Sleeve</th>
                 </tr>
               </thead>
               <tbody>
                 {Object.entries(SIZE_GUIDE.measurements).map(([size, measurements]) => (
-                  <tr key={size}>
-                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-medium text-gray-900 dark:text-white">{size}</td>
-                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300">{measurements.chest}</td>
-                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300">{measurements.length}</td>
-                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300">{measurements.shoulder}</td>
+                  <tr key={size} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                    <td className="border border-gray-200 dark:border-gray-700 px-4 py-3 font-semibold text-gray-900 dark:text-white">{size}</td>
+                    <td className="border border-gray-200 dark:border-gray-700 px-4 py-3 text-gray-700 dark:text-gray-300">{measurements.chest}"</td>
+                    <td className="border border-gray-200 dark:border-gray-700 px-4 py-3 text-gray-700 dark:text-gray-300">{measurements.length}"</td>
+                    <td className="border border-gray-200 dark:border-gray-700 px-4 py-3 text-gray-700 dark:text-gray-300">{measurements.shoulder}"</td>
+                    <td className="border border-gray-200 dark:border-gray-700 px-4 py-3 text-gray-700 dark:text-gray-300">{measurements.sleeve}"</td>
                   </tr>
                 ))}
               </tbody>
@@ -615,17 +656,47 @@ const SizeGuideModal = ({ onClose }) => {
           </div>
         </div>
 
-        {/* Fitting Tips */}
+        {/* Fit Guide */}
         <div>
-          <h4 className="font-medium mb-3 text-gray-900 dark:text-white">Fitting Tips</h4>
-          <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            {SIZE_GUIDE.tips.map((tip, index) => (
-              <li key={index} className="flex items-start">
-                <span className="text-blue-600 dark:text-blue-400 mr-2">•</span>
-                {tip}
-              </li>
+          <h4 className="font-semibold mb-4 text-gray-900 dark:text-white text-lg">Fit Guide</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {SIZE_GUIDE.fitGuide.map((guide, index) => (
+              <div key={index} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 transition-colors duration-300">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center font-bold text-sm">
+                    {guide.size}
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-900 dark:text-white">{guide.size}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{guide.description}</div>
+                  </div>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
+        </div>
+
+        {/* How to Measure */}
+        <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 transition-colors duration-300">
+          <h4 className="font-semibold mb-3 text-blue-900 dark:text-blue-200">How to Measure</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <div className="font-medium text-blue-800 dark:text-blue-300 mb-1">Chest</div>
+              <div className="text-blue-700 dark:text-blue-400">Measure around the fullest part of your chest</div>
+            </div>
+            <div>
+              <div className="font-medium text-blue-800 dark:text-blue-300 mb-1">Length</div>
+              <div className="text-blue-700 dark:text-blue-400">From shoulder seam to bottom hem</div>
+            </div>
+            <div>
+              <div className="font-medium text-blue-800 dark:text-blue-300 mb-1">Shoulder</div>
+              <div className="text-blue-700 dark:text-blue-400">From shoulder point to shoulder point</div>
+            </div>
+            <div>
+              <div className="font-medium text-blue-800 dark:text-blue-300 mb-1">Sleeve</div>
+              <div className="text-blue-700 dark:text-blue-400">From shoulder seam to sleeve end</div>
+            </div>
+          </div>
         </div>
 
         <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -633,7 +704,7 @@ const SizeGuideModal = ({ onClose }) => {
             onClick={onClose}
             className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200"
           >
-            Got it!
+            Close Size Guide
           </button>
         </div>
       </div>
