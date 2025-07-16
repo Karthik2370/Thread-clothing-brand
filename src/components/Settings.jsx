@@ -29,7 +29,11 @@ import {
 import { useTheme } from '../context/ThemeContext';
 
 const Settings = () => {
-  const [activeSection, setActiveSection] = useState('account');
+  const [activeSection, setActiveSection] = useState(() => {
+    // Check URL params for tab
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('tab') || 'account';
+  });
   const { isDarkMode, toggleTheme } = useTheme();
   
   const [notifications, setNotifications] = useState({

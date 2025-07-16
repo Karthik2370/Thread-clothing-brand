@@ -96,7 +96,7 @@ const Header = () => {
               About
             </button>
             <button 
-              onClick={() => scrollToSection('contact')} 
+              onClick={() => navigate('/settings?tab=help')} 
               className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200"
             >
               Contact
@@ -186,7 +186,7 @@ const Header = () => {
                 About
               </button>
               <button 
-                onClick={() => scrollToSection('contact')} 
+                onClick={() => { navigate('/settings?tab=help'); setMobileMenuOpen(false); }} 
                 className="block w-full text-left text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200"
               >
                 Contact
