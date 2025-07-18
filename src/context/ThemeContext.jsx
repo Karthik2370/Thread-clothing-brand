@@ -12,12 +12,9 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check localStorage first, then system preference
+    // Check localStorage only
     const saved = localStorage.getItem('theme');
-    if (saved) {
-      return saved === 'dark';
-    }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return saved === 'dark';
   });
 
   useEffect(() => {
