@@ -104,7 +104,22 @@ const Header = () => {
           </nav>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center space-x-3">
+            {/* Mobile Cart Button */}
+            <button
+              onClick={toggleCart}
+              className="relative p-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200"
+              aria-label="Open cart"
+            >
+              <ShoppingBag size={24} />
+              {getTotalItems() > 0 && (
+                <span className="absolute -top-1 -right-1 bg-black dark:bg-white text-white dark:text-black text-xs rounded-full h-5 w-5 flex items-center justify-center transition-colors duration-300">
+                  {getTotalItems()}
+                </span>
+              )}
+            </button>
+            
+            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200"
@@ -193,14 +208,6 @@ const Header = () => {
               </button>
               
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-4">
-                <button
-                  onClick={() => { toggleCart(); setMobileMenuOpen(false); }}
-                  className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200"
-                >
-                  <ShoppingBag size={20} />
-                  <span>Cart ({getTotalItems()})</span>
-                </button>
-                
                 <button 
                   onClick={() => { navigate('/orders'); setMobileMenuOpen(false); }}
                   className="block w-full text-left text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200"

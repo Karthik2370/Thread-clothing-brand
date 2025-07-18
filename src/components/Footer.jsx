@@ -50,44 +50,46 @@ const Footer = () => {
           </div>
 
           {/* Newsletter Section */}
-          <div className="col-span-1 md:col-span-1">
-            {/* Newsletter Subscription */}
-            <div>
-              <h4 className="text-lg font-semibold mb-3">Stay Updated</h4>
-              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
+          <div className="col-span-1 md:col-span-2">
+            <h4 className="text-lg font-semibold mb-4">Stay Updated</h4>
+            <p className="text-gray-400 text-sm mb-4">
+              Subscribe to get updates on new arrivals, exclusive offers, and style tips.
+            </p>
+            <form onSubmit={handleSubscribe} className="space-y-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
+                  placeholder="Enter your email address"
+                  className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400 text-sm"
                   disabled={isLoading}
                 />
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 rounded-lg font-medium transition-colors duration-200"
+                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 rounded-lg font-medium transition-colors duration-200 text-sm whitespace-nowrap"
                 >
                   {isLoading ? 'Subscribing...' : 'Subscribe'}
                 </button>
-              </form>
+              </div>
               
               {/* Subscription Status Messages */}
               {subscriptionStatus === 'success' && (
-                <p className="text-green-400 text-sm mt-2">
+                <p className="text-green-400 text-sm">
                   ✅ Successfully subscribed! Check your email for confirmation.
                 </p>
               )}
               {subscriptionStatus === 'error' && (
-                <p className="text-red-400 text-sm mt-2">
+                <p className="text-red-400 text-sm">
                   ❌ Please enter a valid email address.
                 </p>
               )}
-            </div>
+            </form>
           </div>
 
           {/* Shop Links */}
-          <div>
+          <div className="col-span-1">
             <h4 className="text-lg font-semibold mb-4">Shop</h4>
             <ul className="space-y-2">
               <li>
@@ -126,7 +128,7 @@ const Footer = () => {
           </div>
 
           {/* Support Links */}
-          <div>
+          <div className="col-span-1">
             <h4 className="text-lg font-semibold mb-4">Support</h4>
             <ul className="space-y-2">
               <li>
